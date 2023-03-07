@@ -1,5 +1,7 @@
-﻿@{
-	ViewData["Title"] = "Register";
+﻿@model StoEtDash.Web.Models.RegisterViewModel;
+
+@{
+    ViewData["Title"] = "Register";
 }
 
 <div class="main-container">
@@ -9,23 +11,21 @@
             <hr />
         </div>
         <div>
-            <form>
+            <form asp-action="OnRegisterSubmit">
                 <div class="form-group">
-                    <label class="control-label">Username:</label>
-                    <input class="form-control" />
-                    <span class="text-danger"></span>
+                    <label asp-for="Username" class="control-label" style="font-weight: bold">Username:</label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger item"></span>
                 </div>
-                <div class="row g-1">
-                    <div class="form-group col-md-6">
-                        <label class="control-label">Password:</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="control-label">Repeat password:</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
-                    </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label" style="font-weight: bold">Password:</label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger item"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword" class="control-label" style="font-weight: bold">Confirm password:</label>
+                    <input asp-for="ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger item"></span>
                 </div>
                 <div class="row form-footer">
                     <div class="form-group col-md-6">
@@ -39,3 +39,9 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -4,6 +4,10 @@
 	ViewData["Title"] = "Login";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/loginRegister.css" />
+}
+
 <div class="main-container">
     <div>
         <div class="header">
@@ -13,16 +17,16 @@
         <div>
             <form asp-action="OnLoginSubmit">
                 <div class="form-group">
-                    <label asp-for="Username" class="control-label" style="font-weight: bold">Username:</label>
+                    <label asp-for="Username" class="control-label">Username:</label>
                     <input asp-for="Username" class="form-control" />
-                    <span asp-validation-for="Username" class="text-danger"></span>
+                    <span asp-validation-for="Username" class="text-danger validation-message"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Password" class="control-label" style="font-weight: bold">Password:</label>
+                    <label asp-for="Password" class="control-label">Password:</label>
                     <input asp-for="Password" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
+                    <span asp-validation-for="Password" class="text-danger validation-message"></span>
                 </div>
-                <div class="row form-footer">
+                <div class="row form-actions">
                     <div class="form-group col-md-6">
                         <input type="submit" value="Login" class="button button-primary" />
                     </div>

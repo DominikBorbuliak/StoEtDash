@@ -9,10 +9,18 @@
 }
 
 .form-group {
-	margin-bottom: 25px;
+	margin-bottom: 10px;
 }
 
-.form-footer a {
+.form-actions a {
 	color: black;
 	font-weight: bold;
+}
+
+label {
+	font-weight: bold !important;
+}
+
+.validation-message:empty:before {
+	content: "\200b";
 }

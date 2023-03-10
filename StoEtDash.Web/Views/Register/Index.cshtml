@@ -1,0 +1,51 @@
+﻿@model StoEtDash.Web.Models.RegisterViewModel;
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/loginRegister.css" />
+}
+
+<div class="main-container">
+    <div>
+        <div class="header">
+            <img src="~/images/logo_text.png" />
+            <hr />
+        </div>
+        <div>
+            <form asp-action="OnRegisterSubmit">
+                <div class="form-group">
+                    <label asp-for="Username" class="control-label">Username:</label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger validation-message"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label">Password:</label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger validation-message"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword" class="control-label">Confirm password:</label>
+                    <input asp-for="ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger validation-message"></span>
+                </div>
+                <div class="row form-actions">
+                    <div class="form-group col-md-6">
+                        <input onclick="window.location.href = '@Url.Action("Index", "Login")';" type="button" value="Login" class="button button-secondary" />
+                    </div>
+                    <div class="form-group col-md-6 d-flex justify-content-end">
+                        <input type="submit" value="Register" class="button button-primary" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

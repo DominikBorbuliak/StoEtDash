@@ -1,0 +1,35 @@
+﻿.main-container {
+	display: grid;
+	place-content: center;
+	height: 100vh;
+}
+
+.header {
+	text-align: center;
+}
+
+.form-group {
+	margin-bottom: 10px;
+}
+
+.form-actions a {
+	color: black;
+	font-weight: bold;
+}
+
+label {
+	font-weight: bold !important;
+}
+
+.validation-message:empty:before {
+	content: "\200b";
+}
+
+.form-control:focus {
+	border-color: #CED4DA;
+	box-shadow: inset 0px -4px 0px 0px rgba(120,99,248,1);
+}
+
+.input-validation-error {
+	box-shadow: inset 0px -4px 0px 0px rgba(195,44,144,1);
+}

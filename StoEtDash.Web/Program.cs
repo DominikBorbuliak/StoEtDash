@@ -6,6 +6,16 @@ using StoEtDash.Web.Database.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Setup session so we can store data there
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 // Add razor runtime compilation
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
@@ -43,6 +53,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.UseNotyf();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -16,8 +19,8 @@
         <header>
             <nav class="navbar justify-content-between">
                 <img class="navbar-brand" src="./images/logo_text_right.png" height="65">
-                <form class="form-inline">
-                    <span>Envirel</span>
+                <form asp-action="Logout" class="form-inline">
+                    <span>@httpContextAccessor?.HttpContext?.Session.GetString("Username")</span>
                     <button class="button button-primary" type="submit">Logout</button>
                 </form>
             </nav>

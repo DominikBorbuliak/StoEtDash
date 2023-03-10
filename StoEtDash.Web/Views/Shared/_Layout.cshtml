@@ -18,7 +18,7 @@
     {
         <header>
             <nav class="navbar justify-content-between">
-                <img class="navbar-brand" src="./images/logo_text_right.png" height="65">
+                <img class="navbar-brand" src="./images/logo_no_text.png" height="65">
                 <form asp-action="Logout" class="form-inline">
                     <span>@httpContextAccessor?.HttpContext?.Session.GetString("Username")</span>
                     <button class="button button-primary" type="submit">Logout</button>

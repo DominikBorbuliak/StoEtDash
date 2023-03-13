@@ -21,5 +21,6 @@ namespace StoEtDash.Web.Database.Services
 
 		public void AddTransaction(TransactionViewModel transactionViewModel) => _transactionRepository.AddTransaction(transactionViewModel.ToDatabaseModel());
 
+		public List<Transaction> GetAllTransactions(string username) => _transactionRepository.GetAllTransactions(username);
 	}
 }

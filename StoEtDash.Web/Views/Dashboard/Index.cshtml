@@ -1,5 +1,6 @@
 ﻿@using StoEtDash.Web.Database.Models;
 @using StoEtDash.Web.Models;
+@model DashboardViewModel;
 
 @{
 	ViewData["Title"] = "Dashboard";
@@ -71,8 +72,8 @@
 <table style="width: 95%; margin-left: 2.5%;">
 	<thead>
 		<tr>
-			<th style="width: 10%">Action</th>
-			<th style="width: 10%">Time</th>
+			<th style="width: 5%">Action</th>
+			<th style="width: 15%">Time</th>
 			<th style="width: 30%">Name</th>
 			<th style="width: 10%">No. of shares</th>
 			<th style="width: 10%">Price / Share</th>
@@ -82,7 +83,27 @@
 			</th>
 		</tr>
 	</thead>
-	<tbody>
-		@*// TODO: Add partial view of items*@
-	</tbody>
+	@{
+		if (Model?.Transactions?.Any() == true)
+		{
+			<tbody>
+				@foreach (var transaction in Model.Transactions)
+				{
+					await Html.RenderPartialAsync("_Transaction", transaction);
+				}
+			</tbody>
+		}
+		else
+		{
+			<tfoot>
+				<tr style="position: relative">
+					<th style="border: 0">
+						<div style="position: absolute; width: 100%; left: 0; right: 0; text-align: center">
+							No available transactions
+						</div>
+					</th>
+				</tr>
+			</tfoot>
+		}
+	}
 </table>

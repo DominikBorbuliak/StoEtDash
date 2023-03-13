@@ -19,7 +19,12 @@ namespace StoEtDash.Web.Controllers
 
 		public IActionResult Index()
 		{
-			return View();
+			var dashboardViewModel = new DashboardViewModel
+			{
+				Transactions = _databaseService.GetAllTransactions(HttpContext.Session.GetString("Username") ?? string.Empty)
+			};
+
+			return View(dashboardViewModel);
 		}
 
 		public IActionResult OnAddTransactionSubmit(TransactionViewModel model)

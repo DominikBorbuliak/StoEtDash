@@ -8,6 +8,6 @@ namespace StoEtDash.Web.Database.Contracts
 		User GetUserByUsername(string username);
 		void CreateUser(LoginViewModel loginViewModel);
 		void AddTransaction(TransactionViewModel transactionViewModel);
-		List<Transaction> GetAllTransactions(string username);
+		Task<DashboardViewModel> GetDashboardViewModelAsync(string username);
 	}
 }

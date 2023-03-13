@@ -32,7 +32,12 @@ builder.Services.AddNotyf(config =>
 });
 
 // Add DatabaseService
-var databaseService = new DatabaseService(new UserRepository(), new TransactionRepository());
+var userRepository = new UserRepository();
+var transactionRepository = new TransactionRepository();
+var marketRepositoryApi = new MarketRepositoryApi("E87EC8AJVXXRIZZ4");
+var currencyExchangeRateRepositoryApi = new CurrencyExchangeRateRepositoryApi();
+
+var databaseService = new DatabaseService(userRepository, transactionRepository, marketRepositoryApi, currencyExchangeRateRepositoryApi);
 builder.Services.AddSingleton<IDatabaseService>(databaseService);
 
 var app = builder.Build();

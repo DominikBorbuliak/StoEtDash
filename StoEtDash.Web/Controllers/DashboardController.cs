@@ -1,5 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StoEtDash.Web.Database.Contracts;
 using StoEtDash.Web.Database.Models;
 using StoEtDash.Web.Models;
@@ -17,12 +18,10 @@ namespace StoEtDash.Web.Controllers
 			_notificationService = notificationService;
 		}
 
-		public IActionResult Index()
+		public async Task<IActionResult> Index()
 		{
-			var dashboardViewModel = new DashboardViewModel
-			{
-				Transactions = _databaseService.GetAllTransactions(HttpContext.Session.GetString("Username") ?? string.Empty)
-			};
+			var username = HttpContext.Session.GetString("Username") ?? string.Empty;
+			var dashboardViewModel = await _databaseService.GetDashboardViewModelAsync(username);
 
 			return View(dashboardViewModel);
 		}

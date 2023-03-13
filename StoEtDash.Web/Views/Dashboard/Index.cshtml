@@ -23,7 +23,7 @@
 					<label class="card-subtitle">Current price of portfolio</label>
 				</div>
 				<div style="width: 100%; text-align: right;">
-					<p class="card-text">700$</p>
+					<p class="card-text">@Model.PortfolioValue</p>
 				</div>
 			</div>
 		</div>
@@ -36,7 +36,7 @@
 					<label class="card-subtitle">Total amount invested</label>
 				</div>
 				<div style="width: 100%; text-align: right;">
-					<p class="card-text">700$</p>
+					<p class="card-text">@Model.InvestedValue</p>
 				</div>
 			</div>
 		</div>
@@ -49,7 +49,7 @@
 					<label class="card-subtitle">Portfolio - Invested</label>
 				</div>
 				<div style="width: 100%; text-align: right;">
-					<p class="card-text">700$</p>
+					<p class="card-text">@(Model.PortfolioValue - Model.InvestedValue)</p>
 				</div>
 			</div>
 		</div>
@@ -62,7 +62,7 @@
 					<label class="card-subtitle">Expected dividend income per year</label>
 				</div>
 				<div style="width: 100%; text-align: right;">
-					<p class="card-text">700$</p>
+					<p class="card-text">@Model.ExpectedDividends</p>
 				</div>
 			</div>
 		</div>

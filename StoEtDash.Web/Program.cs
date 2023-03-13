@@ -11,9 +11,9 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
+	options.IdleTimeout = TimeSpan.FromMinutes(30);
+	options.Cookie.HttpOnly = true;
+	options.Cookie.IsEssential = true;
 });
 
 // Add razor runtime compilation
@@ -25,14 +25,14 @@ builder.Services.AddControllersWithViews();
 // Add ToastNotification
 builder.Services.AddNotyf(config =>
 {
-    config.DurationInSeconds = 3;
-    config.IsDismissable = true;
-    config.Position = NotyfPosition.TopRight;
-    config.HasRippleEffect = true;
+	config.DurationInSeconds = 3;
+	config.IsDismissable = true;
+	config.Position = NotyfPosition.TopRight;
+	config.HasRippleEffect = true;
 });
 
 // Add DatabaseService
-var databaseService = new DatabaseService(new UserRepository());
+var databaseService = new DatabaseService(new UserRepository(), new TransactionRepository());
 builder.Services.AddSingleton<IDatabaseService>(databaseService);
 
 var app = builder.Build();
@@ -40,9 +40,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+	app.UseExceptionHandler("/Home/Error");
+	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+	app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -57,7 +57,7 @@ app.UseNotyf();
 app.UseSession();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}");
+	name: "default",
+	pattern: "{controller=Login}/{action=Index}/{id?}");
 
 app.Run();

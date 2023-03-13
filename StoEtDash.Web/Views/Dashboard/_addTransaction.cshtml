@@ -1,0 +1,136 @@
+﻿@using StoEtDash.Web.Database.Models;
+@using StoEtDash.Web.Models;
+@model TransactionViewModel;
+
+<div class="modal fade" id="addTransactionModal" tabindex="-1" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTransactionModalLabel">Add transaction</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="OnAddTransactionSubmit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group" style="position: relative; display: block;">
+                        <label class="control-label">Search stock or etf:</label>
+                        <input id="searchBar" class="form-control" placeholder="Search" />
+                        <ul id="searchResults" style="position: absolute; background-color: white; list-style-type: none; padding: 0;"></ul>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label">Name:</label>
+                        <input asp-for="Name" class="form-control" id="name" placeholder="Please use search" readonly />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label asp-for="Ticker" class="control-label">Ticker:</label>
+                            <input asp-for="Ticker" class="form-control" id="ticker" placeholder="Please use search" readonly />
+                            <span asp-validation-for="Ticker" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6">
+                            <label class="control-label">Region:</label>
+                            <input class="form-control" id="region" placeholder="Please use search" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Time" class="control-label">Time:</label>
+                        <input asp-for="Time" class="form-control" />
+                        <span asp-validation-for="Time" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label asp-for="NumberOfShares" class="control-label">Number of shares:</label>
+                            <input asp-for="NumberOfShares" class="form-control" />
+                            <span asp-validation-for="NumberOfShares" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6">
+                            <label asp-for="PricePerShare" class="control-label">Price per share:</label>
+                            <input asp-for="PricePerShare" class="form-control" />
+                            <span asp-validation-for="PricePerShare" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label asp-for="Currency" class="control-label">Currency:</label>
+                            <select asp-for="Currency" class="form-select" asp-items="Html.GetEnumSelectList<CurrencyType>()"></select>
+                            <span asp-validation-for="Currency" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6">
+                            <label asp-for="ExchangeRate" class="control-label">Exchange rate:</label>
+                            <input asp-for="ExchangeRate" class="form-control" />
+                            <span asp-validation-for="ExchangeRate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label asp-for="TotalInEur" class="control-label">Total (EUR):</label>
+                            <input asp-for="TotalInEur" class="form-control" />
+                            <span asp-validation-for="TotalInEur" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6">
+                            <label asp-for="FeesInEur" class="control-label">Fees (EUR):</label>
+                            <input asp-for="FeesInEur" class="form-control" />
+                            <span asp-validation-for="FeesInEur" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group" style="text-align: center; margin-top: 10px;">
+                        <div class="modal-footer">
+                            <input type="submit" value="Add" class="button button-primary" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var typingTimer;
+    const searchBar = document.getElementById("searchBar");
+    const searchResults = document.getElementById("searchResults");
+
+    searchBar.addEventListener('keyup', function () {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(doneTyping, 1000);
+    });
+
+    searchBar.addEventListener('keydown', function () {
+        clearTimeout(typingTimer);
+    });
+
+    function doneTyping() {
+        if (!searchBar.value) {
+            searchResults.innerHTML = "";
+            return;
+        }
+
+        $.ajax({
+            url: `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchBar.value}&apikey=E87EC8AJVXXRIZZ4`,
+            type: "GET",
+            success: function (data) {
+                searchResults.innerHTML = "";
+
+                data.bestMatches.forEach(item => {
+                    const li = document.createElement("li");
+
+                    li.innerHTML = `
+                                            <label>${item["2. name"]} (${item["1. symbol"]} | ${item["4. region"]})</label>
+                    `;
+
+                    li.style.borderBottom+= "1px solid black";
+
+                    li.addEventListener('click', function () {
+                        document.getElementById("ticker").value = item["1. symbol"];
+                        document.getElementById("name").value = item["2. name"];
+                        document.getElementById("region").value = item["4. region"];
+
+                        searchResults.innerHTML = "";
+                    });
+
+                    searchResults.appendChild(li);
+                });
+            }
+        });
+    }
+</script>

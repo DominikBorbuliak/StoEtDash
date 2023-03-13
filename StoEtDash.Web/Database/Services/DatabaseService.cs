@@ -4,17 +4,22 @@ using StoEtDash.Web.Models;
 
 namespace StoEtDash.Web.Database.Services
 {
-    public class DatabaseService : IDatabaseService
-    {
-        private readonly IUserRepository _userRepository;
+	public class DatabaseService : IDatabaseService
+	{
+		private readonly IUserRepository _userRepository;
+		private readonly ITransactionRepository _transactionRepository;
 
-        public DatabaseService(IUserRepository userRepository)
-        {
-            _userRepository = userRepository;
-        }
+		public DatabaseService(IUserRepository userRepository, ITransactionRepository transactionRepository)
+		{
+			_userRepository = userRepository;
+			_transactionRepository = transactionRepository;
+		}
 
-        public User GetUserByUsername(string username) => _userRepository.GetUserByUsername(username);
+		public User GetUserByUsername(string username) => _userRepository.GetUserByUsername(username);
 
-        public void CreateUser(LoginViewModel loginViewModel) => _userRepository.CreateUser(loginViewModel.ToDatabaseModel());
-    }
+		public void CreateUser(LoginViewModel loginViewModel) => _userRepository.CreateUser(loginViewModel.ToDatabaseModel());
+
+		public void AddTransaction(TransactionViewModel transactionViewModel) => _transactionRepository.AddTransaction(transactionViewModel.ToDatabaseModel());
+
+	}
 }

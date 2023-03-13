@@ -1,5 +1,88 @@
-﻿@{
+﻿@using StoEtDash.Web.Database.Models;
+@using StoEtDash.Web.Models;
+
+@{
 	ViewData["Title"] = "Dashboard";
 }
 
-<h1>KEK</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css"/>
+}
+
+@await Html.PartialAsync("_addTransaction", new TransactionViewModel {
+	ActionType = TransactionActionType.Buy
+})
+
+<div class="row px-4 py-4">
+	<div class="col-md-3">
+		<div class="card">
+			<div class="card-body">
+				<div style="width: 100%;">
+					<h5 class="card-title">Portfolio</h5>
+					<label class="card-subtitle">Current price of portfolio</label>
+				</div>
+				<div style="width: 100%; text-align: right;">
+					<p class="card-text">700$</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="card">
+			<div class="card-body">
+				<div style="width: 100%;">
+					<h5 class="card-title">Invested</h5>
+					<label class="card-subtitle">Total amount invested</label>
+				</div>
+				<div style="width: 100%; text-align: right;">
+					<p class="card-text">700$</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="card">
+			<div class="card-body">
+				<div style="width: 100%;">
+					<h5 class="card-title">Return</h5>
+					<label class="card-subtitle">Portfolio - Invested</label>
+				</div>
+				<div style="width: 100%; text-align: right;">
+					<p class="card-text">700$</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="card">
+			<div class="card-body">
+				<div style="width: 100%;">
+					<h5 class="card-title">Dividends</h5>
+					<label class="card-subtitle">Expected dividend income per year</label>
+				</div>
+				<div style="width: 100%; text-align: right;">
+					<p class="card-text">700$</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<table style="width: 95%; margin-left: 2.5%;">
+	<thead>
+		<tr>
+			<th style="width: 10%">Action</th>
+			<th style="width: 10%">Time</th>
+			<th style="width: 30%">Name</th>
+			<th style="width: 10%">No. of shares</th>
+			<th style="width: 10%">Price / Share</th>
+			<th style="width: 10%">Total</th>
+			<th style="width: 20%">
+				<button type="button" data-bs-toggle="modal" data-bs-target="#addTransactionModal" class="button button-primary">BUY</button>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@*// TODO: Add partial view of items*@
+	</tbody>
+</table>

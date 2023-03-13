@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoEtDash.Web.Database.Models;
 
@@ -10,9 +11,11 @@ using StoEtDash.Web.Database.Models;
 namespace StoEtDash.Web.Migrations
 {
     [DbContext(typeof(StoEtDashContext))]
-    partial class StoEtDashContextModelSnapshot : ModelSnapshot
+    [Migration("20230313165030_AddTransactionTable")]
+    partial class AddTransactionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.3");

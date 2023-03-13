@@ -3,9 +3,10 @@ using StoEtDash.Web.Models;
 
 namespace StoEtDash.Web.Database.Contracts
 {
-    public interface IDatabaseService
-    {
-        User GetUserByUsername(string username);
-        void CreateUser(LoginViewModel loginViewModel);
-    }
+	public interface IDatabaseService
+	{
+		User GetUserByUsername(string username);
+		void CreateUser(LoginViewModel loginViewModel);
+		void AddTransaction(TransactionViewModel transactionViewModel);
+	}
 }

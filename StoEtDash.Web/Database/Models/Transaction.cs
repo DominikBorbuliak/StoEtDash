@@ -8,7 +8,7 @@ namespace StoEtDash.Web.Database.Models
 	{
 		[Key]
 		[Column(TypeName = "VARCHAR (36)")]
-		public string Id { get; set; } = Guid.NewGuid().ToString();
+		public string Id { get; set; }
 
 		[Column(TypeName = "VARCHAR (4)")]
 		public TransactionActionType Action { get; set; }

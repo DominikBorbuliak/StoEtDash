@@ -1,10 +1,32 @@
-﻿@model StoEtDash.Web.Database.Models.Transaction;
+﻿@using StoEtDash.Web.Extensions;
+@using StoEtDash.Web.Models;
+@model TransactionViewModel;
 
 <tr>
-	<td style="width: 5%">@Model.Action.ToString()</td>
-	<td style="width: 15%">@Model.Time</td>
-	<td style="width: 30%">@Model.Name</td>
-	<td style="width: 10%">@Model.NumberOfShares</td>
-	<td style="width: 10%">@Model.PricePerShare</td>
-	<td style="width: 10%">@Model.TotalInEur</td>
+	<td>@Model.ActionType.ToString()</td>
+	<td>@Model.Time.ToString("dd.MM.yyyy HH:mm")</td>
+	<td>@Model.Name</td>
+	<td>@Model.NumberOfShares.ToString("0.0000000")</td>
+	<td>@string.Format(Model.Currency.GetCurrencyDisplayFormat(), Model.PricePerShare.ToString("0.00"))</td>
+	<td>@($"{Model.TotalInEur.ToString("0.00")} €")</td>
+	<td>
+		<i class="fas fa-edit" onclick="onTransactionClick('@Model.Id')"></i>
+		<i class="fas fa-trash-alt" onclick="window.location.href='@Url.Action("OnDeleteTransactionClicked", "Dashboard", new { transactionId = @Model.Id })'"></i>
+	</td>
 </tr>
+
+
+<script>
+	function onTransactionClick(transactionId) {
+		$.ajax({
+			type: "POST",
+			url: "/Dashboard/ShowEditTransactionModal?transactionId=" + transactionId,
+			contentType: "application/json; charset=utf-8",
+			dataType: "html",
+			success: function (response) {
+				$("#editTransactionModal").find(".modal-body").html(response);
+				$("#editTransactionModal").modal('show');
+			}
+		});
+	}
+</script>

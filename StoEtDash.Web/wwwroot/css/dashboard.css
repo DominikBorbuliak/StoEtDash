@@ -1,3 +1,92 @@
-﻿.card {
-	border-radius: 5px;
+﻿.widget-card-container {
+	display: flex;
+	justify-content: space-evenly;
+	margin: 20px 0;
+}
+
+.widget-card {
+	width: 23%;
+	border: 1px solid #ccc;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 15px;
+	box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.widget-card-heading {
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.widget-card-rows {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+}
+
+.widget-card-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 5px;
+}
+
+.widget-card-label {
+	margin-right: 5px;
+}
+
+.widget-card-value {
+	font-weight: bold;
+	margin-left: 5px;
+}
+
+.widget-card:nth-child(1) {
+	border-color: #f44336;
+}
+
+.widget-card:nth-child(2) {
+	border-color: #e91e63;
+}
+
+.widget-card:nth-child(3) {
+	border-color: #9c27b0;
+}
+
+.widget-card:nth-child(4) {
+	border-color: #2196f3;
+}
+
+table {
+	border-collapse: collapse;
+	width: 96%;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	margin: 2%;
+}
+
+th,
+td {
+	text-align: left;
+	padding: 8px;
+}
+
+th {
+	background-color: #f2f2f2;
+}
+
+tr:nth-of-type(even) {
+	background-color: #f2f2f2;
+}
+
+.fa-edit,
+.fa-trash-alt {
+	font-size: 20px;
+	color: #333;
+	cursor: pointer;
+}
+
+.fa-trash-alt {
+	color: red;
 }

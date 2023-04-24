@@ -1,4 +1,5 @@
-﻿using StoEtDash.Web.Database.Contracts;
+﻿using Newtonsoft.Json;
+using StoEtDash.Web.Database.Contracts;
 using StoEtDash.Web.Database.Models;
 using System.Text.Json;
 
@@ -28,7 +29,7 @@ namespace StoEtDash.Web.Database.Data
 				response.EnsureSuccessStatusCode();
 
 				var responseString = await response.Content.ReadAsStringAsync();
-				var marketOverviewResult = JsonSerializer.Deserialize<MarketOverviewResultApi>(responseString);
+				var marketOverviewResult = JsonConvert.DeserializeObject<MarketOverviewResultApi>(responseString);
 
 				if (marketOverviewResult == null || !double.TryParse(marketOverviewResult.DividendPerShare, out var dividendPerShare))
 				{
@@ -50,7 +51,7 @@ namespace StoEtDash.Web.Database.Data
 				response.EnsureSuccessStatusCode();
 
 				var responseString = await response.Content.ReadAsStringAsync();
-				var globalQuoteResult = JsonSerializer.Deserialize<GlobalQuoteResultApi>(responseString);
+				var globalQuoteResult = JsonConvert.DeserializeObject<GlobalQuoteResultApi>(responseString);
 
 				if (globalQuoteResult?.GlobalQuote == null || !double.TryParse(globalQuoteResult.GlobalQuote.Price, out var pricePerShare))
 				{

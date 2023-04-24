@@ -5,6 +5,7 @@ namespace StoEtDash.Web.Models
 {
 	public class TransactionViewModel
 	{
+		public string? Id { get; set; }
 		public TransactionActionType ActionType { get; set; }
 		[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}", ApplyFormatInEditMode = true)]
 		[DataType(DataType.DateTime)]
@@ -24,6 +25,7 @@ namespace StoEtDash.Web.Models
 	{
 		public static Transaction ToDatabaseModel(this TransactionViewModel transactionViewModel) => new()
 		{
+			Id = transactionViewModel.Id ?? Guid.NewGuid().ToString(),
 			Action = transactionViewModel.ActionType,
 			Time = transactionViewModel.Time,
 			Ticker = transactionViewModel.Ticker,
@@ -35,6 +37,22 @@ namespace StoEtDash.Web.Models
 			TotalInEur = transactionViewModel.TotalInEur,
 			FeesInEur = transactionViewModel.FeesInEur,
 			Username = transactionViewModel.Username
+		};
+
+		public static TransactionViewModel FromDatabaseModel(this Transaction transaction) => new()
+		{
+			Id = transaction.Id,
+			ActionType = transaction.Action,
+			Time = transaction.Time,
+			Ticker = transaction.Ticker,
+			Name = transaction.Name,
+			NumberOfShares = transaction.NumberOfShares,
+			PricePerShare = transaction.PricePerShare,
+			Currency = transaction.Currency,
+			ExchangeRate = transaction.ExchangeRate,
+			TotalInEur = transaction.TotalInEur,
+			FeesInEur = transaction.FeesInEur,
+			Username = transaction.Username
 		};
 	}
 }

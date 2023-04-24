@@ -1,0 +1,38 @@
+﻿@model List<StoEtDash.Web.Models.TransactionViewModel>;
+
+<table>
+	<thead>
+		<tr>
+			<th>Action</th>
+			<th>Time</th>
+			<th>Name</th>
+			<th>No. of shares</th>
+			<th>Price / Share</th>
+			<th>Total</th>
+			<th>Operations</th>
+		</tr>
+	</thead>
+	@{
+		if (Model?.Any() == true)
+		{
+			<tbody>
+				@foreach (var transaction in Model)
+				{
+					await Html.RenderPartialAsync("_Transaction", transaction);
+				}
+			</tbody>
+		}
+		else
+		{
+			<tfoot>
+				<tr style="position: relative">
+					<th style="border: 0">
+						<div style="position: absolute; width: 100%; left: 0; right: 0; text-align: center">
+							No available transactions
+						</div>
+					</th>
+				</tr>
+			</tfoot>
+		}
+	}
+</table>

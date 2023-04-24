@@ -1,4 +1,5 @@
-﻿using StoEtDash.Web.Database.Contracts;
+﻿using Newtonsoft.Json;
+using StoEtDash.Web.Database.Contracts;
 using StoEtDash.Web.Database.Models;
 using System.Text.Json;
 
@@ -20,7 +21,7 @@ namespace StoEtDash.Web.Database.Data
 				response.EnsureSuccessStatusCode();
 
 				var responseString = await response.Content.ReadAsStringAsync();
-				var exchangeRate = JsonSerializer.Deserialize<double>(responseString);
+				var exchangeRate = JsonConvert.DeserializeObject<double>(responseString);
 
 				return exchangeRate;
 			}

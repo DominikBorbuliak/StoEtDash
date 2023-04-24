@@ -1,0 +1,62 @@
+﻿@using StoEtDash.Web.Database.Models;
+@using StoEtDash.Web.Models;
+@model TransactionViewModel;
+
+<form asp-action="OnEditTransactionModalSubmit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="Id" class="form-control" style="display: none" />
+    <div class="form-group">
+        <label asp-for="Name" class="control-label">Name:</label>
+        <input asp-for="Name" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label asp-for="Ticker" class="control-label">Ticker:</label>
+        <input asp-for="Ticker" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label asp-for="Time" class="control-label">Time:</label>
+        <input asp-for="Time" class="form-control" value="@Model.Time.ToString("yyyy-MM-ddThh:mm")" />
+        <span asp-validation-for="Time" class="text-danger"></span>
+    </div>
+    <div class="row">
+        <div class="form-group col-6">
+            <label asp-for="NumberOfShares" class="control-label">Number of shares:</label>
+            <input asp-for="NumberOfShares" class="form-control" />
+            <span asp-validation-for="NumberOfShares" class="text-danger"></span>
+        </div>
+        <div class="form-group col-6">
+            <label asp-for="PricePerShare" class="control-label">Price per share:</label>
+            <input asp-for="PricePerShare" class="form-control" />
+            <span asp-validation-for="PricePerShare" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-6">
+            <label asp-for="Currency" class="control-label">Currency:</label>
+            <select asp-for="Currency" class="form-select" asp-items="Html.GetEnumSelectList<CurrencyType>()"></select>
+            <span asp-validation-for="Currency" class="text-danger"></span>
+        </div>
+        <div class="form-group col-6">
+            <label asp-for="ExchangeRate" class="control-label">Exchange rate:</label>
+            <input asp-for="ExchangeRate" class="form-control" />
+            <span asp-validation-for="ExchangeRate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-6">
+            <label asp-for="TotalInEur" class="control-label">Total (EUR):</label>
+            <input asp-for="TotalInEur" class="form-control" />
+            <span asp-validation-for="TotalInEur" class="text-danger"></span>
+        </div>
+        <div class="form-group col-6">
+            <label asp-for="FeesInEur" class="control-label">Fees (EUR):</label>
+            <input asp-for="FeesInEur" class="form-control" />
+            <span asp-validation-for="FeesInEur" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group" style="text-align: center; margin-top: 10px;">
+        <div class="modal-footer">
+            <input type="submit" value="Save" class="button button-primary" />
+        </div>
+    </div>
+</form>

@@ -1,7 +1,8 @@
-﻿using System.ComponentModel;
-
-namespace StoEtDash.Web.Database.Models
+﻿namespace StoEtDash.Web.Database.Models
 {
+	/// <summary>
+	/// Enum that represents transaction action
+	/// </summary>
 	public enum TransactionActionType
 	{
 		Buy,

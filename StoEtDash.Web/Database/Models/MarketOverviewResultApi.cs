@@ -2,6 +2,9 @@
 
 namespace StoEtDash.Web.Database.Models
 {
+	/// <summary>
+	/// Model used to gather expected dividend per share from api
+	/// </summary>
 	public class MarketOverviewResultApi
 	{
 		[JsonProperty("DividendPerShare")]

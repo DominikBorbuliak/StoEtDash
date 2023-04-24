@@ -7,89 +7,78 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/dashboard.css"/>
+	<link rel="stylesheet" href="~/css/dashboard.css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 }
 
-@await Html.PartialAsync("_addTransaction", new TransactionViewModel {
+@await Html.PartialAsync("_TransactionListModal")
+@await Html.PartialAsync("_EditTransactionModal")
+
+@await Html.PartialAsync("_BuyTransactionModal", new TransactionViewModel {
 	ActionType = TransactionActionType.Buy
 })
 
-<div class="row px-4 py-4">
-	<div class="col-md-3">
-		<div class="card">
-			<div class="card-body">
-				<div style="width: 100%;">
-					<h5 class="card-title">Portfolio</h5>
-					<label class="card-subtitle">Current price of portfolio</label>
-				</div>
-				<div style="width: 100%; text-align: right;">
-					<p class="card-text">@Model.PortfolioValue</p>
-				</div>
-			</div>
+@await Html.PartialAsync("_SellTransactionModal", new TransactionViewModel {
+	ActionType = TransactionActionType.Sell
+})
+
+<div class="widget-card-container">
+	<div class="widget-card">
+		<div class="widget-card-heading">Portfolio</div>
+		<div class="widget-card-row">
+			<div class="widget-card-label">Current portfolio value</div>
+			<div class="widget-card-value">@($"{Model.PortfolioValue.ToString("0.00")} €")</div>
 		</div>
 	</div>
-	<div class="col-md-3">
-		<div class="card">
-			<div class="card-body">
-				<div style="width: 100%;">
-					<h5 class="card-title">Invested</h5>
-					<label class="card-subtitle">Total amount invested</label>
-				</div>
-				<div style="width: 100%; text-align: right;">
-					<p class="card-text">@Model.InvestedValue</p>
-				</div>
-			</div>
+	<div class="widget-card">
+		<div class="widget-card-heading">Investments</div>
+		<div class="widget-card-row">
+			<div class="widget-card-label">Total amount invested (includign fees)</div>
+			<div class="widget-card-value">@($"{Model.InvestedValue.ToString("0.00")} €")</div>
+		</div>
+		<div class="widget-card-row">
+			<div class="widget-card-label">Total fees paid</div>
+			<div class="widget-card-value">@($"{Model.FeesPaid.ToString("0.00")} €")</div>
 		</div>
 	</div>
-	<div class="col-md-3">
-		<div class="card">
-			<div class="card-body">
-				<div style="width: 100%;">
-					<h5 class="card-title">Return</h5>
-					<label class="card-subtitle">Portfolio - Invested</label>
-				</div>
-				<div style="width: 100%; text-align: right;">
-					<p class="card-text">@(Model.PortfolioValue - Model.InvestedValue)</p>
-				</div>
-			</div>
+	<div class="widget-card">
+		<div class="widget-card-heading">Returns</div>
+		<div class="widget-card-row">
+			<div class="widget-card-label">Current return value</div>
+			<div class="widget-card-value">@($"{(Model.PortfolioValue - Model.InvestedValue).ToString("0.00")} €")</div>
 		</div>
 	</div>
-	<div class="col-md-3">
-		<div class="card">
-			<div class="card-body">
-				<div style="width: 100%;">
-					<h5 class="card-title">Dividends</h5>
-					<label class="card-subtitle">Expected dividend income per year</label>
-				</div>
-				<div style="width: 100%; text-align: right;">
-					<p class="card-text">@Model.ExpectedDividends</p>
-				</div>
-			</div>
+	<div class="widget-card">
+		<div class="widget-card-heading">Dividends</div>
+		<div class="widget-card-row">
+			<div class="widget-card-label">Expected dividends</div>
+			<div class="widget-card-value">@($"{Model.ExpectedDividends.ToString("0.00")} €")</div>
 		</div>
 	</div>
 </div>
 
-<table style="width: 95%; margin-left: 2.5%;">
+<table>
 	<thead>
 		<tr>
-			<th style="width: 5%">Action</th>
-			<th style="width: 15%">Time</th>
-			<th style="width: 30%">Name</th>
-			<th style="width: 10%">No. of shares</th>
-			<th style="width: 10%">Price / Share</th>
-			<th style="width: 10%">Total</th>
-			<th style="width: 20%">
-				<button type="button" data-bs-toggle="modal" data-bs-target="#addTransactionModal" class="button button-primary">BUY</button>
+			<th>Name</th>
+			<th>No. of shares</th>
+			<th>Invested Value</th>
+			<th>Fees Paid</th>
+			<th>Average Price</th>
+			<th>Price / Share</th>
+			<th>Expected Dividends</th>
+			<th>
+				<button type="button" data-bs-toggle="modal" data-bs-target="#buyTransactionModal" class="button button-primary">BUY</button>
 			</th>
 		</tr>
 	</thead>
 	@{
-		if (Model?.Transactions?.Any() == true)
+		if (Model?.Assets?.Any() == true)
 		{
 			<tbody>
-				@foreach (var transaction in Model.Transactions)
+				@foreach (var asset in Model.Assets)
 				{
-					await Html.RenderPartialAsync("_Transaction", transaction);
+					await Html.RenderPartialAsync("_Asset", asset);
 				}
 			</tbody>
 		}
@@ -99,7 +88,7 @@
 				<tr style="position: relative">
 					<th style="border: 0">
 						<div style="position: absolute; width: 100%; left: 0; right: 0; text-align: center">
-							No available transactions
+							No available assets
 						</div>
 					</th>
 				</tr>

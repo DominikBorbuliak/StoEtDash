@@ -1,0 +1,40 @@
+﻿@using StoEtDash.Web.Models;
+@model AssetViewModel;
+
+<tr onclick="onAssetClick(event, '@Model.Transactions.First().Ticker')">
+    <td>@Model.Name</td>
+    <td>@Model.NumberOfShares.ToString("0.0000000")</td>
+    <td>@($"{Model.InvestedValue.ToString("0.00")} €")</td>
+    <td>@($"{Model.FeesPaid.ToString("0.00")} €")</td>
+    <td>@($"{Model.AveragePrice.ToString("0.00")} €")</td>
+    <td>@($"{Model.CurrentPricePerShare.ToString("0.00")} €")</td>
+    <td>@($"{Model.ExpectedDividends.ToString("0.00")} €")</td>
+    <td>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#sellTransactionModal" class="button button-secondary" onclick="setDataInSellTransactionModal('@Model.Name', '@Model.Transactions.First().Ticker')">SELL</button>
+    </td>
+</tr>
+
+<script>
+    function setDataInSellTransactionModal(name, ticker) {
+        $("#sellTransactionModalName").val(name);
+        $("#sellTransactionModalTicker").val(ticker);
+    }
+
+    function onAssetClick(e, ticker) {
+        // Do not count as click on asset if button with sell was clicked
+        if (e.target.tagName == 'BUTTON') {
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/Dashboard/ShowAssetTransactions?ticker=" + ticker,
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (response) {
+                $("#transactionListModal").find(".modal-body").html(response);
+                $("#transactionListModal").modal('show');
+            }
+        });
+    }
+</script>

@@ -12,5 +12,7 @@
 		public ChartDataViewModel AssetValueChart { get; set; }
 
 		public ChartDataViewModel DividendVsOtherChart { get; set; }
+
+		public ChartDataViewModel DailyChart { get; set; }
 	}
 }

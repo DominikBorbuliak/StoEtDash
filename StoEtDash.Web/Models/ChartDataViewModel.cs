@@ -6,9 +6,9 @@ namespace StoEtDash.Web.Models
 	{
 
 		[JsonProperty("labels")]
-		public List<string> Labels { get; set; }
+		public List<string>? Labels { get; set; }
 
 		[JsonProperty("datasets")]
-		public List<ChartDatasetViewModel> Datasets { get; set; }
+		public List<ChartDatasetViewModel>? Datasets { get; set; }
 	}
 }

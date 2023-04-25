@@ -24,9 +24,17 @@ namespace StoEtDash.Web.Controllers
 		public async Task<IActionResult> Index()
 		{
 			var username = HttpContext.Session.GetString("Username") ?? string.Empty;
-			var dashboardViewModel = await _databaseService.GetDashboardViewModelAsync(username);
 
-			return View(dashboardViewModel);
+			try
+			{
+				var dashboardViewModel = await _databaseService.GetDashboardViewModelAsync(username);
+				return View(dashboardViewModel);
+			}
+			catch (UserException exception)
+			{
+				_notificationService.Error(exception.Message);
+				return RedirectToAction("Index", "Login");
+			}
 		}
 
 		/// <summary>

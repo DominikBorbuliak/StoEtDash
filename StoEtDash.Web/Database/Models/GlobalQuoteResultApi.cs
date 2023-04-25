@@ -17,6 +17,6 @@ namespace StoEtDash.Web.Database.Models
 	public class GlobalQuoteApi
 	{
 		[JsonProperty("05. price")]
-		public string Price { get; set; } = string.Empty;
+		public string Price { get; set; }
 	}
 }

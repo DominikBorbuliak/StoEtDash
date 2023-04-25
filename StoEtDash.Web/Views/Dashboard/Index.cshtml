@@ -106,6 +106,15 @@
 		<canvas class="chart" id="assetValueChart"></canvas>
 		<div class="chart-legend-wrapper" id="assetValueChartLegend"></div>
 	</div>
+
+	<div class="chart-wrapper" style="width: 50%;">
+		<div class="chart-heading-wrapper">
+			<label class="chart-heading">Daily chart</label>
+		</div>
+		<canvas class="chart" id="dailyChart"></canvas>
+		<div class="chart-legend-wrapper" id="dailyChartLegend"></div>
+	</div>
+
 	<div class="chart-wrapper">
 		<div class="chart-heading-wrapper">
 			<label class="chart-heading">Dividend vs other</label>
@@ -123,6 +132,13 @@
 			@Html.Raw(JsonConvert.SerializeObject(@Model?.AssetValueChart)),
 			'assetValueChart',
 			'assetValueChartLegend'
+		);
+
+		createChart(
+			'line',
+			@Html.Raw(JsonConvert.SerializeObject(@Model?.DailyChart)),
+			'dailyChart',
+			'dailyChartLegend'
 		);
 
 		createChart(

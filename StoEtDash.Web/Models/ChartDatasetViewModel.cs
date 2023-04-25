@@ -4,15 +4,16 @@ namespace StoEtDash.Web.Models
 {
 	public class ChartDatasetViewModel
 	{
+		[JsonProperty("label")]
+		public string? Label { get; set; }
+
 		[JsonProperty("data")]
-		public List<double> Data { get; set; }
+		public List<double>? Data { get; set; }
 
 		[JsonProperty("backgroundColor")]
-		public List<string> BackgroundColors => Enumerable.Repeat(Colors, (int)Math.Ceiling((double)Data.Count / Colors.Count))
-			.SelectMany(color => color)
-			.Take(Data.Count)
-			.ToList();
+		public List<string>? BackgroundColors { get; set; }
 
-		private readonly List<string> Colors = new() { "#DDD9FF", "#5D1444", "#BAB2FE", "#8C1E66", "#7465FD", "#BA2887", "#8656E0", "#A938A5", "#9747C2" };
+		[JsonProperty("borderColor")]
+		public string BorderColor { get; set; } = "#FFFFFF";
 	}
 }

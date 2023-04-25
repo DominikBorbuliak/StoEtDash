@@ -116,6 +116,10 @@ tr:nth-of-type(even) {
 	box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
+.chart-wrapper-wide {
+	width: 50%;
+}
+
 .chart-heading-wrapper {
 	display: flex;
 	justify-content: center;
@@ -144,13 +148,13 @@ tr:nth-of-type(even) {
 	border-color: #7465FD;
 }
 
-.chart-wrapper:nth-child(4) {
-	border-color: #A938A5;
+.chart-legend-wrapper {
+	max-height: 144px;
+	overflow-y: auto;
 }
 
-.chart-legend-wrapper {
-	height: 100px;
-	overflow-y: auto;
+.chart-wrapper-wide .chart-legend-wrapper {
+	max-height: 100px;
 }
 
 .chart-legend-wrapper::-webkit-scrollbar-track {

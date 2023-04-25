@@ -15,5 +15,8 @@ namespace StoEtDash.Web.Models
 
 		[JsonProperty("borderColor")]
 		public string BorderColor { get; set; } = "#FFFFFF";
+
+		[JsonProperty("hoverOffset")]
+		public int HowerOffset = 10;
 	}
 }

@@ -1,4 +1,5 @@
-﻿@using StoEtDash.Web.Database.Models;
+﻿@using Newtonsoft.Json;
+@using StoEtDash.Web.Database.Models;
 @using StoEtDash.Web.Models;
 @model DashboardViewModel;
 
@@ -96,3 +97,39 @@
 		}
 	}
 </table>
+
+<div class="chart-row">
+	<div class="chart-wrapper">
+		<div class="chart-heading-wrapper">
+			<label class="chart-heading">Asset value</label>
+		</div>
+		<canvas class="chart" id="assetValueChart"></canvas>
+		<div class="chart-legend-wrapper" id="assetValueChartLegend"></div>
+	</div>
+	<div class="chart-wrapper">
+		<div class="chart-heading-wrapper">
+			<label class="chart-heading">Dividend vs other</label>
+		</div>
+		<canvas class="chart" id="dividendVsOtherChart"></canvas>
+		<div class="chart-legend-wrapper" id="dividendVsOtherChartLegend"></div>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="./js/chart.js"></script>
+	<script>
+		createChart(
+			'doughnut',
+			@Html.Raw(JsonConvert.SerializeObject(@Model?.AssetValueChart)),
+			'assetValueChart',
+			'assetValueChartLegend'
+		);
+
+		createChart(
+			'doughnut',
+			@Html.Raw(JsonConvert.SerializeObject(@Model?.DividendVsOtherChart)),
+			'dividendVsOtherChart',
+			'dividendVsOtherChartLegend'
+		);
+	</script>
+}

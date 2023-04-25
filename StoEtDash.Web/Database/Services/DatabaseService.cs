@@ -42,13 +42,43 @@ namespace StoEtDash.Web.Database.Services
 
 			var assets = await Task.WhenAll(transactionGroups.Select(group => GetAssetViewModel(group.Key, group.ToList())));
 
+			var assetValueChart = new ChartDataViewModel
+			{
+				Labels = assets.Select(asset => asset.Name).ToList(),
+				Datasets = new List<ChartDatasetViewModel> {
+					new ChartDatasetViewModel {
+						Data = assets.Select(asset => Math.Round(asset.CurrentPricePerShare * asset.NumberOfShares, 2)).ToList()
+					}
+				}
+			};
+
+			var dividendVsOtherChart = new ChartDataViewModel
+			{
+				Labels = new List<string> { "Dividend", "Other" },
+				Datasets = new List<ChartDatasetViewModel> {
+					new ChartDatasetViewModel {
+						Data = assets.Aggregate(new double[] { 0, 0 }, (ratio, asset) => {
+							if (asset.ExpectedDividends > 0) {
+								ratio[0] += asset.NumberOfShares;
+							} else {
+								ratio[1] += asset.NumberOfShares;
+							}
+
+							return ratio;
+						}).ToList()
+					}
+				}
+			};
+
 			return new DashboardViewModel
 			{
 				PortfolioValue = assets.Sum(asset => asset.CurrentPricePerShare * asset.NumberOfShares),
 				InvestedValue = assets.Sum(asset => asset.InvestedValue),
 				FeesPaid = assets.Sum(asset => asset.FeesPaid),
 				ExpectedDividends = assets.Sum(asset => asset.ExpectedDividends),
-				Assets = assets.ToList()
+				Assets = assets.ToList(),
+				AssetValueChart = assetValueChart,
+				DividendVsOtherChart = dividendVsOtherChart
 			};
 		}
 

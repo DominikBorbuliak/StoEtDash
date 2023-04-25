@@ -16,6 +16,16 @@ namespace StoEtDash.Web.Extensions
 		public static string GetCurrencyDisplayFormat<E>(this E value) where E : Enum => value.GetAttribute<E, CurrencyDisplayFormatAttribute>()?.CurrencyDisplayFormat ?? string.Empty;
 
 		/// <summary>
+		/// Get time series function name of enum value
+		/// </summary>
+		/// <typeparam name="E">Type of enum</typeparam>
+		/// <param name="value">Enum value</param>
+		/// <returns>
+		/// Time series function name - if exists
+		/// string.Empty - if time series function name is missing or empty</returns>
+		public static string GetTimeSeriesFunctioNname<E>(this E value) where E : Enum => value.GetAttribute<E, TimeSeriesFunctionNameAttribute>()?.TimeSeriesFunctionName ?? string.Empty;
+
+		/// <summary>
 		/// Get specified attribute of enum value
 		/// </summary>
 		/// <typeparam name="E">Enum type</typeparam>

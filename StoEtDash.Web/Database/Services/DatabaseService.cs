@@ -11,13 +11,15 @@ namespace StoEtDash.Web.Database.Services
 		private readonly ITransactionRepository _transactionRepository;
 		private readonly IMarketRepositoryApi _marketRepositoryApi;
 		private readonly ICurrencyExchangeRateRepositoryApi _currencyExchangeRateRepositoryApi;
+		private readonly IChartService _chartService;
 
-		public DatabaseService(IUserRepository userRepository, ITransactionRepository transactionRepository, IMarketRepositoryApi marketRepositoryApi, ICurrencyExchangeRateRepositoryApi currencyExchangeRateRepositoryApi)
+		public DatabaseService(IUserRepository userRepository, ITransactionRepository transactionRepository, IMarketRepositoryApi marketRepositoryApi, ICurrencyExchangeRateRepositoryApi currencyExchangeRateRepositoryApi, IChartService chartService)
 		{
 			_userRepository = userRepository;
 			_transactionRepository = transactionRepository;
 			_marketRepositoryApi = marketRepositoryApi;
 			_currencyExchangeRateRepositoryApi = currencyExchangeRateRepositoryApi;
+			_chartService = chartService;
 		}
 
 		public User GetUserByUsername(string username) => _userRepository.GetUserByUsername(username);
@@ -41,37 +43,16 @@ namespace StoEtDash.Web.Database.Services
 
 			var transactionGroups = transactions.GroupBy(transaction => transaction.Ticker);
 
-			var assets = await Task.WhenAll(transactionGroups.Select(group => GetAssetViewModel(group.Key, group.ToList())));
+			var assets = (await Task.WhenAll(transactionGroups.Select(group => GetAssetViewModel(group.Key, group.ToList())))).ToList();
 
-			var assetValueChart = new ChartDataViewModel
-			{
-				Labels = assets.Select(asset => asset.Name).ToList(),
-				Datasets = new List<ChartDatasetViewModel> {
-					new ChartDatasetViewModel() {
-						Data = assets.Select(asset => Math.Round(asset.CurrentPricePerShare * asset.NumberOfShares, 2)).ToList(),
-						BackgroundColors = ChartExtensions.GetNColors(assets.Count())
-					}
-				}
-			};
-
-			var dividendVsOtherChart = new ChartDataViewModel
-			{
-				Labels = new List<string> { "Dividend", "Other" },
-				Datasets = new List<ChartDatasetViewModel> {
-					new ChartDatasetViewModel() {
-						Data = assets.Aggregate(new double[] { 0, 0 }, (ratio, asset) => {
-							if (asset.ExpectedDividends > 0) {
-								ratio[0] += asset.NumberOfShares;
-							} else {
-								ratio[1] += asset.NumberOfShares;
-							}
-
-							return ratio;
-						}).ToList(),
-						BackgroundColors = ChartExtensions.GetNColors(2)
-					}
-				}
-			};
+			var charts = await Task.WhenAll(
+				_chartService.GetChartByTypeAsync(assets.ToList(), ChartType.AssetsByValue),
+				_chartService.GetChartByTypeAsync(assets.ToList(), ChartType.AssetsByShares),
+				_chartService.GetChartByTypeAsync(assets.ToList(), ChartType.DividendVsOther),
+				_chartService.GetChartByTypeAsync(assets.ToList(), ChartType.DailyPrices),
+				_chartService.GetChartByTypeAsync(assets.ToList(), ChartType.WeeklyPrices),
+				_chartService.GetChartByTypeAsync(assets.ToList(), ChartType.MonthlyPrices)
+			);
 
 			return new DashboardViewModel
 			{
@@ -80,9 +61,12 @@ namespace StoEtDash.Web.Database.Services
 				FeesPaid = assets.Sum(asset => asset.FeesPaid),
 				ExpectedDividends = assets.Sum(asset => asset.ExpectedDividends),
 				Assets = assets.ToList(),
-				AssetValueChart = assetValueChart,
-				DividendVsOtherChart = dividendVsOtherChart,
-				DailyChart = await GetDailyChart(assets.ToList())
+				AssetsByValue = charts[0],
+				AssetsByShares = charts[1],
+				DividendVsOtherChart = charts[2],
+				DailyPricesChart = charts[3],
+				WeeklyPricesChart = charts[4],
+				MonthlyPricesChart = charts[5]
 			};
 		}
 
@@ -136,67 +120,6 @@ namespace StoEtDash.Web.Database.Services
 			asset.ExpectedDividends *= asset.NumberOfShares;
 
 			return asset;
-		}
-
-		/// <summary>
-		/// Returns daily chart
-		/// </summary>
-		/// <param name="assets"></param>
-		/// <returns></returns>
-		private async Task<ChartDataViewModel> GetDailyChart(List<AssetViewModel> assets)
-		{
-			var tasks = await Task.WhenAll(assets.Select(asset => GetDailyChart(asset.Transactions)));
-
-			var labels = tasks.First().Item1.OrderBy(date => date).Select(date => date.ToString("dd.MM.yyyy")).ToList();
-			var datasets = tasks.Select(task => task.Item2).ToList();
-
-			var colors = ChartExtensions.GetNColors(datasets.Count());
-
-			for (var i = 0; i < colors.Count; i++)
-			{
-				datasets[i].BackgroundColors = new List<string> { colors[i] };
-				datasets[i].BorderColor = colors[i];
-			}
-
-			return new ChartDataViewModel
-			{
-				Labels = labels,
-				Datasets = datasets
-			};
-		}
-
-		/// <summary>
-		/// Returns daily chart dataset and labels
-		/// </summary>
-		/// <param name="transactions"></param>
-		/// <returns></returns>
-		private async Task<(IEnumerable<DateTime>, ChartDatasetViewModel)> GetDailyChart(List<TransactionViewModel> transactions)
-		{
-			var dataset = new ChartDatasetViewModel
-			{
-				Label = transactions.First().Name,
-				Data = new List<double>()
-			};
-
-			var dailyPrices = await _marketRepositoryApi.GetDailyPricesAsync(transactions.First().Ticker);
-
-			var exchangeRate = 1.0;
-			if (transactions.First().Currency != CurrencyType.EUR)
-			{
-				exchangeRate = await _currencyExchangeRateRepositoryApi.GetExchangeRateAsync(transactions.First().Currency, CurrencyType.EUR, DateTime.Now);
-			}
-
-			foreach (var dailyPrice in dailyPrices.OrderBy(item => item.Key))
-			{
-				// Daily price is the price at the end of the day, so we can calculate with same day
-				var sharesToDate = transactions
-					.Where(transaction => transaction.Time <= dailyPrice.Key)
-					.Aggregate(0.0, (count, transaction) => count + (transaction.ActionType == TransactionActionType.Buy ? transaction.NumberOfShares : -transaction.NumberOfShares));
-
-				dataset.Data.Add(dailyPrice.Value * sharesToDate * exchangeRate);
-			}
-
-			return (dailyPrices.Select(item => item.Key), dataset);
 		}
 	}
 }

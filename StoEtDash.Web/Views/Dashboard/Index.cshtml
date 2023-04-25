@@ -101,23 +101,32 @@
 <div class="chart-row">
 	<div class="chart-wrapper">
 		<div class="chart-heading-wrapper">
-			<label class="chart-heading">Asset value</label>
+			<label class="chart-heading">Assets by</label>
+			<select id="assetsChartSelect" class="chart-select" onChange="onAssetsChartSelect()">
+				<option value="value">Value</option>
+				<option value="shares">Shares</option>
+			</select>
 		</div>
-		<canvas class="chart" id="assetValueChart"></canvas>
-		<div class="chart-legend-wrapper" id="assetValueChartLegend"></div>
+		<canvas class="chart" id="assetsChart"></canvas>
+		<div class="chart-legend-wrapper" id="assetsChartLegend"></div>
 	</div>
 
 	<div class="chart-wrapper chart-wrapper-wide">
 		<div class="chart-heading-wrapper">
-			<label class="chart-heading">Daily chart</label>
+			<select id="pricesChartSelect" class="chart-select chart-select-rtl" onChange="onPricesChartSelect()">
+				<option value="daily">Daily</option>
+				<option value="weekly">Weekly</option>
+				<option value="monthly">Monthly</option>
+			</select>
+			<label class="chart-heading">Prices</label>
 		</div>
-		<canvas class="chart" id="dailyChart"></canvas>
-		<div class="chart-legend-wrapper" id="dailyChartLegend"></div>
+		<canvas class="chart" id="pricesChart"></canvas>
+		<div class="chart-legend-wrapper" id="pricesChartLegend"></div>
 	</div>
 
 	<div class="chart-wrapper">
 		<div class="chart-heading-wrapper">
-			<label class="chart-heading">Dividend vs other</label>
+			<label class="chart-heading">Dividend / Other</label>
 		</div>
 		<canvas class="chart" id="dividendVsOtherChart"></canvas>
 		<div class="chart-legend-wrapper" id="dividendVsOtherChartLegend"></div>
@@ -127,25 +136,51 @@
 @section Scripts {
 	<script src="./js/chart.js"></script>
 	<script>
-		createChart(
+		const assetsChart = createChart(
 			'doughnut',
-			@Html.Raw(JsonConvert.SerializeObject(@Model?.AssetValueChart)),
-			'assetValueChart',
-			'assetValueChartLegend'
+			@Html.Raw(JsonConvert.SerializeObject(@Model?.AssetsByValue)),
+			'assetsChart',
+			'assetsChartLegend'
 		);
 
-		createChart(
+		const pricesChart = createChart(
 			'line',
-			@Html.Raw(JsonConvert.SerializeObject(@Model?.DailyChart)),
-			'dailyChart',
-			'dailyChartLegend'
+			@Html.Raw(JsonConvert.SerializeObject(@Model?.DailyPricesChart)),
+			'pricesChart',
+			'pricesChartLegend'
 		);
 
-		createChart(
+		_ = createChart(
 			'doughnut',
 			@Html.Raw(JsonConvert.SerializeObject(@Model?.DividendVsOtherChart)),
 			'dividendVsOtherChart',
 			'dividendVsOtherChartLegend'
 		);
+
+		const onPricesChartSelect = () => {
+			const value = document.getElementById("pricesChartSelect").value;
+
+			if (value === 'daily') {
+				pricesChart.data = @Html.Raw(JsonConvert.SerializeObject(@Model?.DailyPricesChart))
+			} else if (value === 'weekly') {
+				pricesChart.data = @Html.Raw(JsonConvert.SerializeObject(@Model?.WeeklyPricesChart))
+			} else if (value === 'monthly') {
+				pricesChart.data = @Html.Raw(JsonConvert.SerializeObject(@Model?.MonthlyPricesChart))
+			}
+
+			pricesChart.update();
+		}
+
+		const onAssetsChartSelect = () => {
+			const value = document.getElementById("assetsChartSelect").value;
+
+			if (value === 'value') {
+				assetsChart.data = @Html.Raw(JsonConvert.SerializeObject(@Model?.AssetsByValue))
+			} else if (value === 'shares') {
+				assetsChart.data = @Html.Raw(JsonConvert.SerializeObject(@Model?.AssetsByShares))
+			}
+
+			assetsChart.update();
+		}
 	</script>
 }

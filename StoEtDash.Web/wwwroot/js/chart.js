@@ -1,7 +1,7 @@
 ﻿const createChart = (type, data, chartContainerId, chartLegendContainerId) => {
 	var context = document.getElementById(chartContainerId).getContext('2d');
 
-	_ = new Chart(context, {
+	return new Chart(context, {
 		type: type,
 		data: data,
 		options: {

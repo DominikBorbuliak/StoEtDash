@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using StoEtDash.Web.Database.Contracts;
 using StoEtDash.Web.Database.Models;
+using StoEtDash.Web.Extensions;
 
 namespace StoEtDash.Web.Database.Data
 {
@@ -9,7 +10,7 @@ namespace StoEtDash.Web.Database.Data
 		private const string BaseUrl = "https://www.alphavantage.co/query";
 		private const string OverviewFunctionFormat = "function=OVERVIEW&symbol={0}&apikey={1}";
 		private const string GlobalQuoteFunctionFormat = "function=GLOBAL_QUOTE&symbol={0}&apikey={1}";
-		private const string TimeSeriesDailyFunctionFormat = "function=TIME_SERIES_DAILY&symbol={0}&apikey={1}";
+		private const string TimeSeriesFunctionFormat = "function={0}&symbol={1}&apikey={2}";
 		private readonly string _apiKey;
 
 		public MarketRepositoryApi(string apiKey)
@@ -67,9 +68,9 @@ namespace StoEtDash.Web.Database.Data
 			}
 		}
 
-		public async Task<Dictionary<DateTime, double>> GetDailyPricesAsync(string ticker)
+		public async Task<Dictionary<DateTime, double>> GetTimeSeriesPrices(TimeSeriesType timeSeriesType, string ticker)
 		{
-			var queryUrl = string.Format($"{BaseUrl}?{TimeSeriesDailyFunctionFormat}", ticker, _apiKey);
+			var queryUrl = string.Format($"{BaseUrl}?{TimeSeriesFunctionFormat}", timeSeriesType.GetTimeSeriesFunctioNname(), ticker, _apiKey);
 			var queryUri = new Uri(queryUrl);
 
 			using (var httpClient = new HttpClient())
@@ -78,11 +79,18 @@ namespace StoEtDash.Web.Database.Data
 				response.EnsureSuccessStatusCode();
 
 				var responseString = await response.Content.ReadAsStringAsync();
-				var timeSeriesDailyResult = JsonConvert.DeserializeObject<TimeSeriesDailyResultApi>(responseString);
+
+				var timeSeriesDailyResult = JsonConvert.DeserializeObject<TimeSeriesResultApi>(responseString);
 
 				try
 				{
-					return timeSeriesDailyResult.TimeSeriesDaily.ToDictionary(item => DateTime.Parse(item.Key), item => double.Parse(item.Value.Price));
+					return timeSeriesType switch
+					{
+						TimeSeriesType.Daily => timeSeriesDailyResult.TimeSeriesDaily.Take(365).ToDictionary(item => DateTime.Parse(item.Key), item => double.Parse(item.Value.Price)),
+						TimeSeriesType.Weekly => timeSeriesDailyResult.TimeSeriesWeekly.Take(52).ToDictionary(item => DateTime.Parse(item.Key), item => double.Parse(item.Value.Price)),
+						TimeSeriesType.Monthly => timeSeriesDailyResult.TimeSeriesMonthly.Take(12).ToDictionary(item => DateTime.Parse(item.Key), item => double.Parse(item.Value.Price)),
+						_ => throw new ArgumentOutOfRangeException(nameof(timeSeriesType), $"Not expected time series type value: {timeSeriesType}"),
+					};
 				}
 				catch
 				{

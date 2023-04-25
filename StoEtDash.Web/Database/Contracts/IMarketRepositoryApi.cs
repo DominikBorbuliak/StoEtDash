@@ -1,4 +1,6 @@
-﻿namespace StoEtDash.Web.Database.Contracts
+﻿using StoEtDash.Web.Database.Models;
+
+namespace StoEtDash.Web.Database.Contracts
 {
 	public interface IMarketRepositoryApi
 	{
@@ -19,11 +21,12 @@
 		Task<double> GetPricePerShareAsync(string ticker);
 
 		/// <summary>
-		/// Gets previous daily prices for ticker
+		/// Gets time series prices for ticker
 		/// Throws user exception with appropiate text when error occurs
 		/// </summary>
+		/// <param name="timeSeriesType"></param>
 		/// <param name="ticker"></param>
 		/// <returns></returns>
-		Task<Dictionary<DateTime, double>> GetDailyPricesAsync(string ticker);
+		Task<Dictionary<DateTime, double>> GetTimeSeriesPrices(TimeSeriesType timeSeriesType, string ticker);
 	}
 }

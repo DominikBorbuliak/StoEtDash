@@ -124,12 +124,24 @@ tr:nth-of-type(even) {
 	display: flex;
 	justify-content: center;
 	border-bottom: 1px solid black;
+	font-weight: bold;
+	font-size: 20px;
+	align-items: baseline;
 }
 
 .chart-heading {
+	margin-bottom: 10px;
+}
+
+.chart-select {
+	border: none;
+	outline: none;
 	font-weight: bold;
 	font-size: 20px;
-	margin-bottom: 10px;
+}
+
+.chart-select-rtl {
+	direction: rtl;
 }
 
 .chart {

@@ -137,8 +137,25 @@ namespace StoEtDash.Web.Database.Services
 		{
 			var tasks = await Task.WhenAll(assets.Select(asset => GetPricesChartAsync(asset.Transactions, timeSeriesType)));
 
-			var labels = tasks
-				.First().Item1
+			var longestTimeSeries = tasks
+				.MaxBy(task => task.Item1.Count());
+
+			// Check if some stocks/ETFs does not have enough data (stock was created recently)
+			var shortTimeSeries = tasks.Where(task => task.Item1.Count() < longestTimeSeries.Item1.Count());
+			if (shortTimeSeries.Any())
+			{
+				foreach (var shortTimeSerie in shortTimeSeries)
+				{
+					// Prepend 0 to serie if there are missing values
+					for (var i = 0; i < longestTimeSeries.Item1.Count() - shortTimeSerie.Item1.Count(); i++)
+					{
+						shortTimeSerie.Item2.Data?.Prepend(0);
+					}
+				}
+			}
+
+			var labels = longestTimeSeries
+				.Item1
 				.OrderBy(date => date)
 				.Select(date => date.ToString("dd.MM.yyyy"))
 				.ToList();

@@ -224,7 +224,11 @@
 					tableRow.hide();
 				}
 			});
-		}
 
+			// Restrip table
+			$("tr:visible").each(function (index) {
+				$(this).css("background-color", !!(index & 1) ? "#ffffff" : "#f2f2f2");
+			});
+		}
 	</script>
 }

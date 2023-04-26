@@ -1,0 +1,142 @@
+﻿@using StoEtDash.Web.Database.Models;
+@using StoEtDash.Web.Models;
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@model TransactionViewModel;
+
+<div class="modal fade" id="buy-transaction-modal" tabindex="-1" aria-labelledby="buy-transaction-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buy-transaction-modal-label">Buy transaction</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="OnBuyTransactionModalSubmit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group" style="position: relative; display: block;">
+                        <label class="control-label">Search stock or etf:</label>
+                        <input id="buy-transaction-modal-search-bar" class="form-control" placeholder="Search" />
+                        <ul id="buy-transaction-modal-search-results" style="position: absolute; background-color: white; list-style-type: none; padding: 0;"></ul>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label">Name:</label>
+                        <input asp-for="Name" class="form-control" id="buy-transaction-modal-name" placeholder="Please use search" readonly />
+                        <span id="buy-transaction-modal-name-errors" asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label asp-for="Ticker" class="control-label">Ticker:</label>
+                            <input asp-for="Ticker" class="form-control" id="buy-transaction-modal-ticker" placeholder="Please use search" readonly />
+                            <span id="buy-transaction-modal-ticker-errors" asp-validation-for="Ticker" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6">
+                            <label class="control-label">Region:</label>
+                            <input class="form-control" id="buy-transaction-modal-region" placeholder="Please use search" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Time" class="control-label">Time:</label>
+                        <input asp-for="Time" class="form-control" value="@Model.Time.ToString("yyyy-MM-ddTHH:mm")" max="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"/>
+                        <span asp-validation-for="Time" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label asp-for="NumberOfShares" class="control-label">Number of shares:</label>
+                            <input asp-for="NumberOfShares" class="form-control" />
+                            <span asp-validation-for="NumberOfShares" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6">
+                            <label asp-for="PricePerShare" class="control-label">Price per share:</label>
+                            <input asp-for="PricePerShare" class="form-control" />
+                            <span asp-validation-for="PricePerShare" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label asp-for="Currency" class="control-label">Currency:</label>
+                            <select asp-for="Currency" class="form-select" asp-items="Html.GetEnumSelectList<CurrencyType>()"></select>
+                            <span asp-validation-for="Currency" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6">
+                            <label asp-for="ExchangeRate" class="control-label">Exchange rate:</label>
+                            <input asp-for="ExchangeRate" class="form-control" />
+                            <span asp-validation-for="ExchangeRate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label asp-for="TotalInEur" class="control-label">Total (EUR):</label>
+                            <input asp-for="TotalInEur" class="form-control" />
+                            <span asp-validation-for="TotalInEur" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6">
+                            <label asp-for="FeesInEur" class="control-label">Fees (EUR):</label>
+                            <input asp-for="FeesInEur" class="form-control" />
+                            <span asp-validation-for="FeesInEur" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group" style="text-align: center; margin-top: 10px;">
+                        <div class="modal-footer">
+                            <input type="submit" value="Buy" class="button button-primary" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var typingTimer;
+    const searchBar = document.getElementById("buy-transaction-modal-search-bar");
+    const searchResults = document.getElementById("buy-transaction-modal-search-results");
+
+    searchBar.addEventListener('keyup', function () {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(doneTyping, 1000);
+    });
+
+    searchBar.addEventListener('keydown', function () {
+        clearTimeout(typingTimer);
+    });
+
+    const doneTyping = () => {
+        if (!searchBar.value) {
+            searchResults.innerHTML = "";
+            return;
+        }
+
+        $.ajax({
+            url: `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchBar.value}&apikey=${'@Configuration["MarketingApiKey"]'}`,
+            type: "GET",
+            success: function (data) {
+                searchResults.innerHTML = "";
+
+                data.bestMatches.forEach(item => {
+                    const li = document.createElement("li");
+
+                    li.innerHTML = `
+                                            <label>${item["2. name"]} (${item["1. symbol"]} | ${item["4. region"]})</label>
+                    `;
+
+                    li.style.borderBottom+= "1px solid black";
+
+                    li.addEventListener('click', function () {
+                        document.getElementById("buy-transaction-modal-ticker").value = item["1. symbol"];
+                        document.getElementById("buy-transaction-modal-name").value = item["2. name"];
+                        document.getElementById("buy-transaction-modal-region").value = item["4. region"];
+
+                        searchResults.innerHTML = "";
+
+                        // Refresh error messages
+                        $("#buy-transaction-modal-ticker-errors").text('');
+                        $("#buy-transaction-modal-name-errors").text('');
+                    });
+
+                    searchResults.appendChild(li);
+                });
+            }
+        });
+    }
+</script>

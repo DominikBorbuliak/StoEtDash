@@ -42,3 +42,23 @@ html {
 	border: 1px solid #BA2887;
 	color: black;
 }
+
+.navbar {
+	background-color: #FBFBFB;
+	border-bottom: 1px solid black;
+}
+
+.navbar-brand {
+	margin-left: 20px;
+}
+
+.form-inline {
+	margin-right: 20px;
+}
+
+.form-inline > span {
+	margin-right: 10px;
+	font-weight: bold;
+	font-size: 1.2rem;
+	vertical-align: middle;
+}

@@ -18,11 +18,21 @@ namespace StoEtDash.Web.Controllers
 			_notificationService = notificationService;
 		}
 
+		/// <summary>
+		/// Loads login page view
+		/// </summary>
+		/// <returns></returns>
 		public IActionResult Index()
 		{
 			return View();
 		}
 
+		/// <summary>
+		/// Checks whether user exists and compares passwords
+		/// If user authorized, redirects to main page
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
 		public IActionResult OnLoginSubmit(LoginViewModel model)
 		{
 			if (!ModelState.IsValid)
@@ -39,6 +49,8 @@ namespace StoEtDash.Web.Controllers
 					_notificationService.Error("Invalid password.");
 					return View("Index", model);
 				}
+
+				HttpContext.Session.SetString("Username", model.Username);
 			}
 			catch (UserException exception)
 			{

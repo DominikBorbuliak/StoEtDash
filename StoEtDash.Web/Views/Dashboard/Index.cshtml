@@ -1,5 +1,245 @@
-﻿@{
+﻿@using Newtonsoft.Json;
+@using StoEtDash.Web.Database.Models;
+@using StoEtDash.Web.Models;
+@model DashboardViewModel;
+
+@{
 	ViewData["Title"] = "Dashboard";
 }
 
-<h1>KEK</h1>
+@section Styles {
+	<link rel="stylesheet" href="~/css/dashboard.css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+}
+
+@await Html.PartialAsync("_TransactionListModal")
+@await Html.PartialAsync("_EditTransactionModal")
+
+@await Html.PartialAsync("_BuyTransactionModal", new TransactionViewModel {
+	ActionType = TransactionActionType.Buy
+})
+
+@await Html.PartialAsync("_SellTransactionModal", new TransactionViewModel {
+	ActionType = TransactionActionType.Sell
+})
+
+@*
+	Widgets
+*@
+<div class="widget-card-container">
+	<div class="widget-card">
+		<div class="widget-card-heading">Portfolio</div>
+		<div class="widget-card-row">
+			<div class="widget-card-label">Current portfolio value</div>
+			<div class="widget-card-value">@($"{Model.PortfolioValue.ToString("0.00")} €")</div>
+		</div>
+	</div>
+	<div class="widget-card">
+		<div class="widget-card-heading">Investments</div>
+		<div class="widget-card-row">
+			<div class="widget-card-label">Total fees paid</div>
+			<div class="widget-card-value">@($"{Model.FeesPaid.ToString("0.00")} €")</div>
+		</div>
+		<div class="widget-card-row">
+			<div class="widget-card-label">Total amount invested</div>
+			<div class="widget-card-value">@($"{Model.InvestedValue.ToString("0.00")} €")</div>
+		</div>
+	</div>
+	<div class="widget-card">
+		<div class="widget-card-heading">Returns</div>
+		<div class="widget-card-row">
+			<div class="widget-card-label">Current return value</div>
+			<div class="widget-card-value">@($"{(Model.PortfolioValue - Model.InvestedValue).ToString("0.00")} €")</div>
+		</div>
+	</div>
+	<div class="widget-card">
+		<div class="widget-card-heading">Dividends</div>
+		<div class="widget-card-row">
+			<div class="widget-card-label">Current dividend yield</div>
+			<div class="widget-card-value">@($"{(Model.ExpectedDividends / Model.InvestedValue * 100).ToString("0.00")} %")</div>
+		</div>
+		<div class="widget-card-row">
+			<div class="widget-card-label">Expected dividends</div>
+			<div class="widget-card-value">@($"{Model.ExpectedDividends.ToString("0.00")} €")</div>
+		</div>
+	</div>
+</div>
+
+@*
+	Filters
+*@
+<div class="filter-row">
+	<div class="filter-wrapper">
+		<input type="checkbox" id="underpriced-assets-checkbox" name="underpriced-assets-checkbox" onclick="filtersChanged()">
+		<label for="underpriced-assets-checkbox">Show only underpriced assets</label>
+	</div>
+	<div class="filter-wrapper">
+		<label for="asset-type-select">Asset types:</label>
+		<select id="asset-type-select" onChange="filtersChanged()">
+			<option value="all">All</option>
+			<option value="dividend">Dividend</option>
+			<option value="other">Other</option>
+		</select>
+	</div>
+</div>
+
+@*
+	Table
+*@
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>No. of shares</th>
+			<th>Invested Value</th>
+			<th>Fees Paid</th>
+			<th>Average Price</th>
+			<th>Price / Share</th>
+			<th>Expected Dividends</th>
+			<th>
+				<button type="button" data-bs-toggle="modal" data-bs-target="#buy-transaction-modal" class="button button-primary" onClick="clearErrorMessages()">BUY</button>
+			</th>
+		</tr>
+	</thead>
+	@{
+		if (Model?.Assets?.Any() == true)
+		{
+			<tbody>
+				@foreach (var asset in Model.Assets)
+				{
+					await Html.RenderPartialAsync("_Asset", asset);
+				}
+			</tbody>
+		}
+		else
+		{
+			<tfoot>
+				<tr>
+					<td>
+						No available assets
+					</td>
+				</tr>
+			</tfoot>
+		}
+	}
+</table>
+
+@*
+	Charts
+*@
+<div class="chart-row">
+	<div class="chart-wrapper">
+		<div class="chart-heading-wrapper">
+			<label class="chart-heading">Assets by</label>
+			<select id="assets-chart-select" class="chart-select" onChange="onAssetsChartSelect()">
+				<option value="value">Value</option>
+				<option value="shares">Shares</option>
+			</select>
+		</div>
+		<canvas class="chart" id="assets-chart"></canvas>
+		<div class="chart-legend-wrapper" id="assets-chart-legend"></div>
+	</div>
+
+	<div class="chart-wrapper chart-wrapper-wide">
+		<div class="chart-heading-wrapper">
+			<select id="prices-chart-select" class="chart-select chart-select-rtl" onChange="onPricesChartSelect()">
+				<option value="daily">Daily</option>
+				<option value="weekly">Weekly</option>
+				<option value="monthly">Monthly</option>
+			</select>
+			<label class="chart-heading">Prices</label>
+		</div>
+		<canvas class="chart" id="prices-chart"></canvas>
+		<div class="chart-legend-wrapper" id="prices-chart-legend"></div>
+	</div>
+
+	<div class="chart-wrapper">
+		<div class="chart-heading-wrapper">
+			<label class="chart-heading">Dividend / Other</label>
+		</div>
+		<canvas class="chart" id="dividend-vs-other-chart"></canvas>
+		<div class="chart-legend-wrapper" id="dividend-vs-other-chart-legend"></div>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="./js/chart.js"></script>
+	<script src="./js/dashboard.js"></script>
+	<script>
+		const assetsChart = createChart(
+			'doughnut',
+			@Html.Raw(JsonConvert.SerializeObject(@Model?.AssetsByValue)),
+			'assets-chart',
+			'assets-chart-legend'
+		);
+
+		const pricesChart = createChart(
+			'line',
+			@Html.Raw(JsonConvert.SerializeObject(@Model?.DailyPricesChart)),
+			'prices-chart',
+			'prices-chart-legend'
+		);
+
+		_ = createChart(
+			'doughnut',
+			@Html.Raw(JsonConvert.SerializeObject(@Model?.DividendVsOtherChart)),
+			'dividend-vs-other-chart',
+			'dividend-vs-other-chart-legend'
+		);
+
+		const onPricesChartSelect = () => {
+			const value = document.getElementById("prices-chart-select").value;
+
+			if (value === 'daily') {
+				pricesChart.data = @Html.Raw(JsonConvert.SerializeObject(@Model?.DailyPricesChart))
+			} else if (value === 'weekly') {
+				pricesChart.data = @Html.Raw(JsonConvert.SerializeObject(@Model?.WeeklyPricesChart))
+			} else if (value === 'monthly') {
+				pricesChart.data = @Html.Raw(JsonConvert.SerializeObject(@Model?.MonthlyPricesChart))
+			}
+
+			pricesChart.update();
+		};
+
+		const onAssetsChartSelect = () => {
+			const value = document.getElementById("assets-chart-select").value;
+
+			if (value === 'value') {
+				assetsChart.data = @Html.Raw(JsonConvert.SerializeObject(@Model?.AssetsByValue))
+			} else if (value === 'shares') {
+				assetsChart.data = @Html.Raw(JsonConvert.SerializeObject(@Model?.AssetsByShares))
+			}
+
+			assetsChart.update();
+		};
+
+		// Use client side filtering, because server side would be slow and heavy on resource consuming
+		const filtersChanged = () => {
+			const underpricedAssetsOnly = document.getElementById("underpriced-assets-checkbox").checked;
+			const assetsType = document.getElementById("asset-type-select").value;
+
+			const assets = @Html.Raw(JsonConvert.SerializeObject(@Model?.Assets));
+
+
+			assets.forEach((asset) => {
+				const tableRow = $("#" + asset.Transactions[0].Ticker.replace('.', ''));
+
+				// Reset view of each row
+				tableRow.show();
+
+				if (underpricedAssetsOnly && asset.CurrentPricePerShare >= asset.AveragePrice) {
+					tableRow.hide();
+				} else if (assetsType == "dividend" && asset.ExpectedDividends == 0) {
+					tableRow.hide();
+				} else if (assetsType == "other" && asset.ExpectedDividends != 0) {
+					tableRow.hide();
+				}
+			});
+
+			// Restrip table
+			$("tr:visible").each(function (index) {
+				$(this).css("background-color", !!(index & 1) ? "#ffffff" : "#f2f2f2");
+			});
+		}
+	</script>
+}

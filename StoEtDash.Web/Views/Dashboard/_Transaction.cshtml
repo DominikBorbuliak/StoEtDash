@@ -1,0 +1,16 @@
+﻿@using StoEtDash.Web.Extensions;
+@using StoEtDash.Web.Models;
+@model TransactionViewModel;
+
+<tr>
+    <td>@Model.ActionType.ToString()</td>
+    <td>@Model.Time.ToString("dd.MM.yyyy HH:mm")</td>
+    <td>@Model.Name</td>
+    <td>@Model.NumberOfShares.ToString("0.0000000")</td>
+    <td>@string.Format(Model.Currency.GetCurrencyDisplayFormat(), Model.PricePerShare.ToString("0.00"))</td>
+    <td>@($"{Model.TotalInEur.ToString("0.00")} €")</td>
+    <td>
+        <i class="fas fa-edit" onclick="onEditTransactionClick('@Model.Id')"></i>
+        <i class="fas fa-trash-alt" onclick="window.location.href='@Url.Action("OnDeleteTransactionClicked", "Dashboard", new { transactionId = @Model.Id })'"></i>
+    </td>
+</tr>

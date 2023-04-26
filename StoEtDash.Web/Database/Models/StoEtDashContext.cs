@@ -2,10 +2,11 @@
 
 namespace StoEtDash.Web.Database.Models
 {
-    public class StoEtDashContext : DbContext
-    {
-        public DbSet<User> Users { get; set; }
+	public class StoEtDashContext : DbContext
+	{
+		public DbSet<User> Users { get; set; }
+		public DbSet<Transaction> Transactions { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite(@"Data Source=./Database/StoEtDash.db");
-    }
+		protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite(@"Data Source=./Database/StoEtDash.db");
+	}
 }

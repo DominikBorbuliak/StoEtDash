@@ -1,0 +1,15 @@
+﻿@using StoEtDash.Web.Models;
+@model AssetViewModel;
+
+<tr id="@Model.Transactions.First().Ticker.Replace(".", string.Empty)" onclick="onAssetClick(event, '@Model.Transactions.First().Ticker')">
+    <td>@Model.Name</td>
+    <td>@Model.NumberOfShares.ToString("0.0000000")</td>
+    <td>@($"{Model.InvestedValue.ToString("0.00")} €")</td>
+    <td>@($"{Model.FeesPaid.ToString("0.00")} €")</td>
+    <td>@($"{Model.AveragePrice.ToString("0.00")} €")</td>
+    <td>@($"{Model.CurrentPricePerShare.ToString("0.00")} €")</td>
+    <td>@($"{Model.ExpectedDividends.ToString("0.00")} €")</td>
+    <td>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#sell-transaction-modal" class="button button-secondary" onclick="setDataInSellTransactionModal('@Model.Name', '@Model.Transactions.First().Ticker')">SELL</button>
+    </td>
+</tr>

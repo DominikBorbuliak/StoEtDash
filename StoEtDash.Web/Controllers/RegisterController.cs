@@ -17,11 +17,20 @@ namespace StoEtDash.Web.Controllers
 			_notificationService = notificationService;
 		}
 
+		/// <summary>
+		/// Loads register page view
+		/// </summary>
+		/// <returns></returns>
 		public IActionResult Index()
 		{
 			return View();
 		}
 
+		/// <summary>
+		/// Creates user if possible and redirects to main page
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
 		public IActionResult OnRegisterSubmit(RegisterViewModel model)
 		{
 			if (!ModelState.IsValid)
@@ -32,6 +41,8 @@ namespace StoEtDash.Web.Controllers
 			try
 			{
 				_databaseService.CreateUser(model);
+
+				HttpContext.Session.SetString("Username", model.Username);
 			}
 			catch (UserException exception)
 			{

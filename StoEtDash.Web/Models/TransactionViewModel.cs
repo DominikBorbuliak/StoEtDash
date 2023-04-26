@@ -48,6 +48,9 @@ namespace StoEtDash.Web.Models
 		public string Username { get; set; } = string.Empty;
 	}
 
+	/// <summary>
+	/// Mapper from and to TransactionViewModel
+	/// </summary>
 	public static class TransactionViewModelMapper
 	{
 		public static Transaction ToDatabaseModel(this TransactionViewModel transactionViewModel) => new()

@@ -129,14 +129,13 @@ namespace StoEtDash.Web.Controllers
 			try
 			{
 				_databaseService.DeleteTransactionById(transactionId);
+				return RedirectToAction("Index", "Dashboard");
 			}
 			catch (UserException exception)
 			{
 				_notificationService.Error(exception.Message);
 				return RedirectToAction("Index", "Dashboard");
 			}
-
-			return RedirectToAction("Index", "Dashboard");
 		}
 
 		/// <summary>

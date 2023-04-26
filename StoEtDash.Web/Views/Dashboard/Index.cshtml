@@ -23,6 +23,9 @@
 	ActionType = TransactionActionType.Sell
 })
 
+@*
+	Widgets
+*@
 <div class="widget-card-container">
 	<div class="widget-card">
 		<div class="widget-card-heading">Portfolio</div>
@@ -62,6 +65,9 @@
 	</div>
 </div>
 
+@*
+	Filters
+*@
 <div class="filter-row">
 	<div class="filter-wrapper">
 		<input type="checkbox" id="underpriced-assets-checkbox" name="underpriced-assets-checkbox" onclick="filtersChanged()">
@@ -77,6 +83,9 @@
 	</div>
 </div>
 
+@*
+	Table
+*@
 <table>
 	<thead>
 		<tr>
@@ -115,6 +124,9 @@
 	}
 </table>
 
+@*
+	Charts
+*@
 <div class="chart-row">
 	<div class="chart-wrapper">
 		<div class="chart-heading-wrapper">
@@ -201,6 +213,7 @@
 			assetsChart.update();
 		};
 
+		// Use client side filtering, because server side would be slow and heavy on resource consuming
 		const filtersChanged = () => {
 			const underpricedAssetsOnly = document.getElementById("underpriced-assets-checkbox").checked;
 			const assetsType = document.getElementById("asset-type-select").value;

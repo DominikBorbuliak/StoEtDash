@@ -1,6 +1,5 @@
 ﻿using StoEtDash.Web.Database.Contracts;
 using StoEtDash.Web.Database.Models;
-using StoEtDash.Web.Extensions;
 using StoEtDash.Web.Models;
 
 namespace StoEtDash.Web.Database.Services

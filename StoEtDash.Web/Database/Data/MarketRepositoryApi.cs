@@ -23,27 +23,26 @@ namespace StoEtDash.Web.Database.Data
 			var queryUrl = string.Format($"{BaseUrl}?{OverviewFunctionFormat}", ticker, _apiKey);
 			var queryUri = new Uri(queryUrl);
 
-			using (var httpClient = new HttpClient())
+			using var httpClient = new HttpClient();
+
+			var response = await httpClient.GetAsync(queryUri);
+			response.EnsureSuccessStatusCode();
+
+			var responseString = await response.Content.ReadAsStringAsync();
+			var marketOverviewResult = JsonConvert.DeserializeObject<MarketOverviewResultApi>(responseString);
+
+			// ETFs do not have dividend per share so its ok when it is null
+			if (marketOverviewResult != null && string.IsNullOrEmpty(marketOverviewResult.DividendPerShare))
 			{
-				var response = await httpClient.GetAsync(queryUri);
-				response.EnsureSuccessStatusCode();
-
-				var responseString = await response.Content.ReadAsStringAsync();
-				var marketOverviewResult = JsonConvert.DeserializeObject<MarketOverviewResultApi>(responseString);
-
-				// ETFs do not have dividend per share so its ok when it is null
-				if (marketOverviewResult != null && string.IsNullOrEmpty(marketOverviewResult.DividendPerShare))
-				{
-					return 0;
-				}
-
-				if (marketOverviewResult == null || !double.TryParse(marketOverviewResult.DividendPerShare, out var dividendPerShare))
-				{
-					throw new UserException("Error occured while gathering data from market repository. Please try again later.");
-				}
-
-				return dividendPerShare;
+				return 0;
 			}
+
+			if (marketOverviewResult == null || !double.TryParse(marketOverviewResult.DividendPerShare, out var dividendPerShare))
+			{
+				throw new UserException("Error occured while gathering data from market repository. Please try again later.");
+			}
+
+			return dividendPerShare;
 		}
 
 		public async Task<double> GetPricePerShareAsync(string ticker)
@@ -51,21 +50,20 @@ namespace StoEtDash.Web.Database.Data
 			var queryUrl = string.Format($"{BaseUrl}?{GlobalQuoteFunctionFormat}", ticker, _apiKey);
 			var queryUri = new Uri(queryUrl);
 
-			using (var httpClient = new HttpClient())
+			using var httpClient = new HttpClient();
+
+			var response = await httpClient.GetAsync(queryUri);
+			response.EnsureSuccessStatusCode();
+
+			var responseString = await response.Content.ReadAsStringAsync();
+			var globalQuoteResult = JsonConvert.DeserializeObject<GlobalQuoteResultApi>(responseString);
+
+			if (globalQuoteResult?.GlobalQuote == null || !double.TryParse(globalQuoteResult.GlobalQuote.Price, out var pricePerShare))
 			{
-				var response = await httpClient.GetAsync(queryUri);
-				response.EnsureSuccessStatusCode();
-
-				var responseString = await response.Content.ReadAsStringAsync();
-				var globalQuoteResult = JsonConvert.DeserializeObject<GlobalQuoteResultApi>(responseString);
-
-				if (globalQuoteResult?.GlobalQuote == null || !double.TryParse(globalQuoteResult.GlobalQuote.Price, out var pricePerShare))
-				{
-					throw new UserException("Error occured while gathering data from market repository. Please try again later.");
-				}
-
-				return pricePerShare;
+				throw new UserException("Error occured while gathering data from market repository. Please try again later.");
 			}
+
+			return pricePerShare;
 		}
 
 		public async Task<Dictionary<DateTime, double>> GetTimeSeriesPrices(TimeSeriesType timeSeriesType, string ticker)
@@ -73,29 +71,28 @@ namespace StoEtDash.Web.Database.Data
 			var queryUrl = string.Format($"{BaseUrl}?{TimeSeriesFunctionFormat}", timeSeriesType.GetTimeSeriesFunctioNname(), ticker, _apiKey);
 			var queryUri = new Uri(queryUrl);
 
-			using (var httpClient = new HttpClient())
+			using var httpClient = new HttpClient();
+
+			var response = await httpClient.GetAsync(queryUri);
+			response.EnsureSuccessStatusCode();
+
+			var responseString = await response.Content.ReadAsStringAsync();
+
+			var timeSeriesDailyResult = JsonConvert.DeserializeObject<TimeSeriesResultApi>(responseString);
+
+			try
 			{
-				var response = await httpClient.GetAsync(queryUri);
-				response.EnsureSuccessStatusCode();
-
-				var responseString = await response.Content.ReadAsStringAsync();
-
-				var timeSeriesDailyResult = JsonConvert.DeserializeObject<TimeSeriesResultApi>(responseString);
-
-				try
+				return timeSeriesType switch
 				{
-					return timeSeriesType switch
-					{
-						TimeSeriesType.Daily => timeSeriesDailyResult.TimeSeriesDaily.Take(365).ToDictionary(item => DateTime.Parse(item.Key), item => double.Parse(item.Value.Price)),
-						TimeSeriesType.Weekly => timeSeriesDailyResult.TimeSeriesWeekly.Take(52).ToDictionary(item => DateTime.Parse(item.Key), item => double.Parse(item.Value.Price)),
-						TimeSeriesType.Monthly => timeSeriesDailyResult.TimeSeriesMonthly.Take(12).ToDictionary(item => DateTime.Parse(item.Key), item => double.Parse(item.Value.Price)),
-						_ => throw new ArgumentOutOfRangeException(nameof(timeSeriesType), $"Not expected time series type value: {timeSeriesType}"),
-					};
-				}
-				catch
-				{
-					throw new UserException("Error occured while gathering data from market repository. Please try again later.");
-				}
+					TimeSeriesType.Daily => timeSeriesDailyResult.TimeSeriesDaily.Take(365).ToDictionary(item => DateTime.Parse(item.Key), item => double.Parse(item.Value.Price)),
+					TimeSeriesType.Weekly => timeSeriesDailyResult.TimeSeriesWeekly.Take(52).ToDictionary(item => DateTime.Parse(item.Key), item => double.Parse(item.Value.Price)),
+					TimeSeriesType.Monthly => timeSeriesDailyResult.TimeSeriesMonthly.Take(12).ToDictionary(item => DateTime.Parse(item.Key), item => double.Parse(item.Value.Price)),
+					_ => throw new ArgumentOutOfRangeException(nameof(timeSeriesType), $"Not expected time series type value: {timeSeriesType}"),
+				};
+			}
+			catch
+			{
+				throw new UserException("Error occured while gathering data from market repository. Please try again later.");
 			}
 		}
 	}

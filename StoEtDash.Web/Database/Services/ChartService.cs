@@ -8,13 +8,11 @@ namespace StoEtDash.Web.Database.Services
 	{
 		private readonly List<string> _colors = new() { "#DDD9FF", "#5D1444", "#BAB2FE", "#8C1E66", "#7465FD", "#BA2887", "#8656E0", "#A938A5", "#9747C2" };
 
-		private readonly ITransactionRepository _transactionRepository;
 		private readonly IMarketRepositoryApi _marketRepositoryApi;
 		private readonly ICurrencyExchangeRateRepositoryApi _currencyExchangeRateRepositoryApi;
 
-		public ChartService(ITransactionRepository transactionRepository, IMarketRepositoryApi marketRepositoryApi, ICurrencyExchangeRateRepositoryApi currencyExchangeRateRepositoryApi)
+		public ChartService(IMarketRepositoryApi marketRepositoryApi, ICurrencyExchangeRateRepositoryApi currencyExchangeRateRepositoryApi)
 		{
-			_transactionRepository = transactionRepository;
 			_marketRepositoryApi = marketRepositoryApi;
 			_currencyExchangeRateRepositoryApi = currencyExchangeRateRepositoryApi;
 		}

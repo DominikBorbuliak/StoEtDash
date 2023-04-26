@@ -37,7 +37,7 @@ var transactionRepository = new TransactionRepository();
 var marketRepositoryApi = new MarketRepositoryApi("E87EC8AJVXXRIZZ4");
 var currencyExchangeRateRepositoryApi = new CurrencyExchangeRateRepositoryApi();
 
-var chartService = new ChartService(transactionRepository, marketRepositoryApi, currencyExchangeRateRepositoryApi);
+var chartService = new ChartService(marketRepositoryApi, currencyExchangeRateRepositoryApi);
 var databaseService = new DatabaseService(userRepository, transactionRepository, marketRepositoryApi, currencyExchangeRateRepositoryApi, chartService);
 builder.Services.AddSingleton<IDatabaseService>(databaseService);
 

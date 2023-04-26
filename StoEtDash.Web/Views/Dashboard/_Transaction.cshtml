@@ -10,23 +10,7 @@
 	<td>@string.Format(Model.Currency.GetCurrencyDisplayFormat(), Model.PricePerShare.ToString("0.00"))</td>
 	<td>@($"{Model.TotalInEur.ToString("0.00")} €")</td>
 	<td>
-		<i class="fas fa-edit" onclick="onTransactionClick('@Model.Id')"></i>
+		<i class="fas fa-edit" onclick="onEditTransactionClick('@Model.Id')"></i>
 		<i class="fas fa-trash-alt" onclick="window.location.href='@Url.Action("OnDeleteTransactionClicked", "Dashboard", new { transactionId = @Model.Id })'"></i>
 	</td>
 </tr>
-
-
-<script>
-	function onTransactionClick(transactionId) {
-		$.ajax({
-			type: "POST",
-			url: "/Dashboard/ShowEditTransactionModal?transactionId=" + transactionId,
-			contentType: "application/json; charset=utf-8",
-			dataType: "html",
-			success: function (response) {
-				$("#editTransactionModal").find(".modal-body").html(response);
-				$("#editTransactionModal").modal('show');
-			}
-		});
-	}
-</script>

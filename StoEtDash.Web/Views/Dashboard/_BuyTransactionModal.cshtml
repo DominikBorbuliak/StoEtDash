@@ -2,11 +2,11 @@
 @using StoEtDash.Web.Models;
 @model TransactionViewModel;
 
-<div class="modal fade" id="buyTransactionModal" tabindex="-1" aria-labelledby="buyTransactionModalLabel" aria-hidden="true">
+<div class="modal fade" id="buy-transaction-modal" tabindex="-1" aria-labelledby="buy-transaction-modal-label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="buyTransactionModalLabel">Buy transaction</h5>
+                <h5 class="modal-title" id="buy-transaction-modal-label">Buy transaction</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -14,23 +14,23 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group" style="position: relative; display: block;">
                         <label class="control-label">Search stock or etf:</label>
-                        <input id="buyTransactionModalSearchBar" class="form-control" placeholder="Search" />
-                        <ul id="buyTransactionModalSearchResults" style="position: absolute; background-color: white; list-style-type: none; padding: 0;"></ul>
+                        <input id="buy-transaction-modal-search-bar" class="form-control" placeholder="Search" />
+                        <ul id="buy-transaction-modal-search-results" style="position: absolute; background-color: white; list-style-type: none; padding: 0;"></ul>
                     </div>
                     <div class="form-group">
                         <label asp-for="Name" class="control-label">Name:</label>
-                        <input asp-for="Name" class="form-control" id="buyTransactionModalName" placeholder="Please use search" readonly />
+                        <input asp-for="Name" class="form-control" id="buy-transaction-modal-name" placeholder="Please use search" readonly />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <div class="row">
                         <div class="form-group col-6">
                             <label asp-for="Ticker" class="control-label">Ticker:</label>
-                            <input asp-for="Ticker" class="form-control" id="buyTransactionModalTicker" placeholder="Please use search" readonly />
+                            <input asp-for="Ticker" class="form-control" id="buy-transaction-modal-ticker" placeholder="Please use search" readonly />
                             <span asp-validation-for="Ticker" class="text-danger"></span>
                         </div>
                         <div class="form-group col-6">
                             <label class="control-label">Region:</label>
-                            <input class="form-control" id="buyTransactionModalRegion" placeholder="Please use search" readonly />
+                            <input class="form-control" id="buy-transaction-modal-region" placeholder="Please use search" readonly />
                         </div>
                     </div>
                     <div class="form-group">
@@ -87,8 +87,8 @@
 
 <script>
     var typingTimer;
-    const searchBar = document.getElementById("buyTransactionModalSearchBar");
-    const searchResults = document.getElementById("buyTransactionModalSearchResults");
+    const searchBar = document.getElementById("buy-transaction-modal-search-bar");
+    const searchResults = document.getElementById("buy-transaction-modal-search-results");
 
     searchBar.addEventListener('keyup', function () {
         clearTimeout(typingTimer);
@@ -99,7 +99,7 @@
         clearTimeout(typingTimer);
     });
 
-    function doneTyping() {
+    const doneTyping = () => {
         if (!searchBar.value) {
             searchResults.innerHTML = "";
             return;
@@ -121,9 +121,9 @@
                     li.style.borderBottom+= "1px solid black";
 
                     li.addEventListener('click', function () {
-                        document.getElementById("buyTransactionModalTicker").value = item["1. symbol"];
-                        document.getElementById("buyTransactionModalName").value = item["2. name"];
-                        document.getElementById("buyTransactionModalRegion").value = item["4. region"];
+                        document.getElementById("buy-transaction-modal-ticker").value = item["1. symbol"];
+                        document.getElementById("buy-transaction-modal-name").value = item["2. name"];
+                        document.getElementById("buy-transaction-modal-region").value = item["4. region"];
 
                         searchResults.innerHTML = "";
                     });

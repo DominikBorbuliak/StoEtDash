@@ -2,11 +2,11 @@
 @using StoEtDash.Web.Models;
 @model TransactionViewModel;
 
-<div class="modal fade" id="sellTransactionModal" tabindex="-1" aria-labelledby="sellTransactionModalLabel" aria-hidden="true">
+<div class="modal fade" id="sell-transaction-modal" tabindex="-1" aria-labelledby="sell-transaction-modal-label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="sellTransactionModalLabel">Sell transaction</h5>
+                <h5 class="modal-title" id="sell-transaction-modal-label">Sell transaction</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -15,12 +15,12 @@
                     <input asp-for="ActionType" style="display: none;" />
                     <div class="form-group">
                         <label asp-for="Name" class="control-label">Name:</label>
-                        <input asp-for="Name" class="form-control" id="sellTransactionModalName" placeholder="Please use search" readonly />
+                        <input asp-for="Name" class="form-control" id="sell-transaction-modal-name" placeholder="Please use search" readonly />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Ticker" class="control-label">Ticker:</label>
-                        <input asp-for="Ticker" class="form-control" id="sellTransactionModalTicker" placeholder="Please use search" readonly />
+                        <input asp-for="Ticker" class="form-control" id="sell-transaction-modal-ticker" placeholder="Please use search" readonly />
                         <span asp-validation-for="Ticker" class="text-danger"></span>
                     </div>
                     <div class="form-group">

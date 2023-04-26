@@ -19,6 +19,7 @@ namespace StoEtDash.Web.Database.Contracts
 		/// <summary>
 		/// Deletes transaction by id
 		/// Expects that transaction id exists
+		/// Throws UserException with appropiate text when transaction could not be deleted
 		/// </summary>
 		/// <param name="transactionId"></param>
 		void DeleteTransactionById(string transactionId);

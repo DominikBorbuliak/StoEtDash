@@ -28,6 +28,22 @@ namespace StoEtDash.Web.Database.Data
 			var transaction = dbContext.Transactions.First(transaction => transaction.Id.Equals(transactionId));
 			dbContext.Transactions.Remove(transaction);
 
+			// Check if number of shares would not be less than 0 if transaction was deleted
+			var transactionsToCheck = dbContext.Transactions
+				.Where(t => t.Username.Equals(transaction.Username) && t.Ticker.Equals(transaction.Ticker) && !t.Id.Equals(transactionId))
+				.OrderBy(t => t.Time);
+
+			var numberOfShares = 0.0;
+			foreach (var transactionToCheck in transactionsToCheck)
+			{
+				numberOfShares += transactionToCheck.Action == TransactionActionType.Buy ? transactionToCheck.NumberOfShares : -transactionToCheck.NumberOfShares;
+
+				if (numberOfShares < 0)
+				{
+					throw new UserException("Selected transaction can not be deleted, because number of shares would be less than 0.");
+				}
+			}
+
 			dbContext.SaveChanges();
 		}
 

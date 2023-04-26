@@ -126,7 +126,15 @@ namespace StoEtDash.Web.Controllers
 		/// <returns></returns>
 		public IActionResult OnDeleteTransactionClicked(string transactionId)
 		{
-			_databaseService.DeleteTransactionById(transactionId);
+			try
+			{
+				_databaseService.DeleteTransactionById(transactionId);
+			}
+			catch (UserException exception)
+			{
+				_notificationService.Error(exception.Message);
+				return RedirectToAction("Index", "Dashboard");
+			}
 
 			return RedirectToAction("Index", "Dashboard");
 		}
@@ -148,8 +156,9 @@ namespace StoEtDash.Web.Controllers
 			foreach (var transaction in transactions.OrderBy(t => t.Time))
 			{
 				// Skip currently editing transaction
-				if (!string.IsNullOrEmpty(transactionId) && transactionId.Equals(transaction.Id)) {
-						continue;
+				if (!string.IsNullOrEmpty(transactionId) && transactionId.Equals(transaction.Id))
+				{
+					continue;
 				}
 
 				currentNumberOfShares += transaction.ActionType == TransactionActionType.Buy ? transaction.NumberOfShares : -transaction.NumberOfShares;

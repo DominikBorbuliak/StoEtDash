@@ -35,6 +35,11 @@ namespace StoEtDash.Web.Database.Services
 		/// <returns></returns>
 		private ChartDataViewModel GetAssetsByValueChart(List<AssetViewModel> assets)
 		{
+			if (!assets.Any())
+			{
+				return new ChartDataViewModel();
+			}
+
 			var labels = assets
 				.Select(asset => asset.Name)
 				.ToList();
@@ -62,6 +67,11 @@ namespace StoEtDash.Web.Database.Services
 		/// <returns></returns>
 		private ChartDataViewModel GetAssetsBySharesChart(List<AssetViewModel> assets)
 		{
+			if (!assets.Any())
+			{
+				return new ChartDataViewModel();
+			}
+
 			var labels = assets
 				.Select(asset => asset.Name)
 				.ToList();
@@ -89,6 +99,11 @@ namespace StoEtDash.Web.Database.Services
 		/// <returns></returns>
 		private ChartDataViewModel GetDividendVsOtherChart(List<AssetViewModel> assets)
 		{
+			if (!assets.Any())
+			{
+				return new ChartDataViewModel();
+			}
+
 			var labels = new List<string> { "Dividend", "Other" };
 
 			var data = assets
@@ -133,6 +148,11 @@ namespace StoEtDash.Web.Database.Services
 		/// <returns></returns>
 		private async Task<ChartDataViewModel> GetPricesChartAsync(List<AssetViewModel> assets, TimeSeriesType timeSeriesType)
 		{
+			if (!assets.Any())
+			{
+				return new ChartDataViewModel();
+			}
+
 			var tasks = await Task.WhenAll(assets.Select(asset => GetPricesChartAsync(asset.Transactions, timeSeriesType)));
 
 			var longestTimeSeries = tasks

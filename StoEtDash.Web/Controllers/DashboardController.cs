@@ -130,5 +130,42 @@ namespace StoEtDash.Web.Controllers
 
 			return RedirectToAction("Index", "Dashboard");
 		}
+
+		/// <summary>
+		/// Gets number of sellable shares to provided date and time
+		/// </summary>
+		/// <param name="ticker"></param>
+		/// <param name="dateTime"></param>
+		/// <returns></returns>
+		public IActionResult GetNumberOfSellableShare(string ticker, DateTime dateTime, string transactionId)
+		{
+			var username = HttpContext.Session.GetString("Username") ?? string.Empty;
+			var transactions = _databaseService.GetTransactionsByTicker(ticker, username);
+
+			var numberOfSellableShares = 0.0;
+			var currentNumberOfShares = 0.0;
+
+			foreach (var transaction in transactions.OrderBy(t => t.Time))
+			{
+				// Skip currently editing transaction
+				if (!string.IsNullOrEmpty(transactionId) && transactionId.Equals(transaction.Id)) {
+						continue;
+				}
+
+				currentNumberOfShares += transaction.ActionType == TransactionActionType.Buy ? transaction.NumberOfShares : -transaction.NumberOfShares;
+
+				if (transaction.Time < dateTime)
+				{
+					numberOfSellableShares = currentNumberOfShares;
+				}
+				else
+				{
+					numberOfSellableShares = Math.Min(numberOfSellableShares, currentNumberOfShares);
+				}
+			}
+
+			return Ok(numberOfSellableShares);
+		}
+
 	}
 }

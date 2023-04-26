@@ -88,7 +88,7 @@
 			<th>Price / Share</th>
 			<th>Expected Dividends</th>
 			<th>
-				<button type="button" data-bs-toggle="modal" data-bs-target="#buy-transaction-modal" class="button button-primary">BUY</button>
+				<button type="button" data-bs-toggle="modal" data-bs-target="#buy-transaction-modal" class="button button-primary" onClick="clearErrorMessages()">BUY</button>
 			</th>
 		</tr>
 	</thead>
@@ -105,12 +105,10 @@
 		else
 		{
 			<tfoot>
-				<tr style="position: relative">
-					<th style="border: 0">
-						<div style="position: absolute; width: 100%; left: 0; right: 0; text-align: center">
-							No available assets
-						</div>
-					</th>
+				<tr>
+					<td>
+						No available assets
+					</td>
 				</tr>
 			</tfoot>
 		}

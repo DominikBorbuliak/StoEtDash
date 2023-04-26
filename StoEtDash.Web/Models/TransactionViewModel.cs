@@ -7,17 +7,44 @@ namespace StoEtDash.Web.Models
 	{
 		public string? Id { get; set; }
 		public TransactionActionType ActionType { get; set; }
-		[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}", ApplyFormatInEditMode = true)]
+
+		[Required(ErrorMessage = "Please enter the date and time.")]
 		[DataType(DataType.DateTime)]
 		public DateTime Time { get; set; } = DateTime.Now;
+
+		[Required(ErrorMessage = "Please use the search to fill ticker.")]
+		[DataType(DataType.Text)]
 		public string Ticker { get; set; } = string.Empty;
+
+		[Required(ErrorMessage = "Please use the search to fill name.")]
+		[DataType(DataType.Text)]
 		public string Name { get; set; } = string.Empty;
+
+		[Required(ErrorMessage = "Please enter the number of shares.")]
+		[Range(0.00000001, int.MaxValue, ErrorMessage = "Please enter the number greater or equal to 0.00000001.")]
 		public double NumberOfShares { get; set; }
+
+		[Required(ErrorMessage = "Please enter the price per share.")]
+		[Range(0, int.MaxValue, ErrorMessage = "Please enter the number greater or equal to 0.")]
+		[DataType(DataType.Currency)]
 		public double PricePerShare { get; set; }
+
 		public CurrencyType Currency { get; set; }
+
+		[Required(ErrorMessage = "Please enter the exchange rate.")]
+		[Range(0, int.MaxValue, ErrorMessage = "Please enter the number greater or equal to 0.")]
 		public double ExchangeRate { get; set; }
+
+		[Required(ErrorMessage = "Please enter the total in eur.")]
+		[Range(0, int.MaxValue, ErrorMessage = "Please enter the number greater or equal to 0.")]
+		[DataType(DataType.Currency)]
 		public double TotalInEur { get; set; }
+
+		[Required(ErrorMessage = "Please enter the fees in eur.")]
+		[Range(0, int.MaxValue, ErrorMessage = "Please enter the number greater or equal to 0.")]
+		[DataType(DataType.Currency)]
 		public double FeesInEur { get; set; }
+
 		public string Username { get; set; } = string.Empty;
 	}
 

@@ -3,8 +3,13 @@ using AspNetCoreHero.ToastNotification.Extensions;
 using StoEtDash.Web.Database.Contracts;
 using StoEtDash.Web.Database.Data;
 using StoEtDash.Web.Database.Services;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Setup culture info
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
 // Add config file
 builder.Configuration.AddJsonFile("appsettings.json", false, true);

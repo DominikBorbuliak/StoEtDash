@@ -16,7 +16,7 @@
     </div>
     <div class="form-group">
         <label asp-for="Time" class="control-label">Time:</label>
-        <input asp-for="Time" class="form-control" id="edit-transaction-modal-time" value="@Model.Time.ToString("yyyy-MM-ddThh:mm")" oninput="setMaximumSellableSharesForEditModal()" />
+        <input asp-for="Time" class="form-control" id="edit-transaction-modal-time" value="@Model.Time.ToString("yyyy-MM-ddTHH:mm")" max="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm") oninput="setMaximumSellableSharesForEditModal()" />
         <span asp-validation-for="Time" class="text-danger"></span>
     </div>
     <div class="row">

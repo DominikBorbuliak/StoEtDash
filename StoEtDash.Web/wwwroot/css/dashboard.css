@@ -69,7 +69,7 @@ table {
 	border-collapse: collapse;
 	width: 96%;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-	margin: 2%;
+	margin: 0 2% 2% 2%;
 }
 
 th,
@@ -181,4 +181,29 @@ tr:nth-of-type(even) {
 .chart-legend-wrapper::-webkit-scrollbar-thumb {
 	border-radius: 10px;
 	background: linear-gradient(180deg, #7465fd, #BA2887);
+}
+
+/*
+	Filters
+*/
+
+.filter-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	margin: 2% 2% 1% 2%;
+}
+
+.filter-wrapper {
+	border-bottom: 1px solid #8656E0;
+	margin-right: 2%;
+}
+
+.filter-wrapper label {
+	font-weight: bold;
+}
+
+.filter-wrapper select {
+	border: none;
+	outline: none;
 }

@@ -1,7 +1,7 @@
 ﻿@using StoEtDash.Web.Models;
 @model AssetViewModel;
 
-<tr onclick="onAssetClick(event, '@Model.Transactions.First().Ticker')">
+<tr id="@Model.Transactions.First().Ticker.Replace(".", string.Empty)" onclick="onAssetClick(event, '@Model.Transactions.First().Ticker')">
     <td>@Model.Name</td>
     <td>@Model.NumberOfShares.ToString("0.0000000")</td>
     <td>@($"{Model.InvestedValue.ToString("0.00")} €")</td>

@@ -1,5 +1,7 @@
 ﻿@using StoEtDash.Web.Database.Models;
 @using StoEtDash.Web.Models;
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @model TransactionViewModel;
 
 <div class="modal fade" id="buy-transaction-modal" tabindex="-1" aria-labelledby="buy-transaction-modal-label" aria-hidden="true">
@@ -106,7 +108,7 @@
         }
 
         $.ajax({
-            url: `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchBar.value}&apikey=E87EC8AJVXXRIZZ4`,
+            url: `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchBar.value}&apikey=${'@Configuration["MarketingApiKey"]'}`,
             type: "GET",
             success: function (data) {
                 searchResults.innerHTML = "";

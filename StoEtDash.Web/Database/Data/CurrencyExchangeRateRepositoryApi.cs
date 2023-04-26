@@ -14,16 +14,15 @@ namespace StoEtDash.Web.Database.Data
 			var queryUrl = string.Format($"{BaseUrl}/{ExchangeRateFunctionFormat}", date.ToString("yyyy-MM-dd"), currencyFrom.ToString(), currencyTo.ToString());
 			var queryUri = new Uri(queryUrl);
 
-			using (var httpClient = new HttpClient())
-			{
-				var response = await httpClient.GetAsync(queryUri);
-				response.EnsureSuccessStatusCode();
+			using var httpClient = new HttpClient();
 
-				var responseString = await response.Content.ReadAsStringAsync();
-				var exchangeRate = JsonConvert.DeserializeObject<double>(responseString);
+			var response = await httpClient.GetAsync(queryUri);
+			response.EnsureSuccessStatusCode();
 
-				return exchangeRate;
-			}
+			var responseString = await response.Content.ReadAsStringAsync();
+			var exchangeRate = JsonConvert.DeserializeObject<double>(responseString);
+
+			return exchangeRate;
 		}
 	}
 }

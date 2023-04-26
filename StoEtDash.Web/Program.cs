@@ -6,6 +6,9 @@ using StoEtDash.Web.Database.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add config file
+builder.Configuration.AddJsonFile("appsettings.json", false, true);
+
 // Setup session so we can store data there
 builder.Services.AddDistributedMemoryCache();
 
@@ -31,10 +34,13 @@ builder.Services.AddNotyf(config =>
 	config.HasRippleEffect = true;
 });
 
+// Load api key from config
+var marketingApiKey = builder.Configuration["MarketingApiKey"] ?? throw new ArgumentException("Marketing api key not found. Please add one to the configuration file.");
+
 // Add DatabaseService
 var userRepository = new UserRepository();
 var transactionRepository = new TransactionRepository();
-var marketRepositoryApi = new MarketRepositoryApi("E87EC8AJVXXRIZZ4");
+var marketRepositoryApi = new MarketRepositoryApi(marketingApiKey);
 var currencyExchangeRateRepositoryApi = new CurrencyExchangeRateRepositoryApi();
 
 var chartService = new ChartService(marketRepositoryApi, currencyExchangeRateRepositoryApi);

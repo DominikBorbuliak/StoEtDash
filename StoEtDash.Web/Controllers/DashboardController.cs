@@ -103,6 +103,11 @@ namespace StoEtDash.Web.Controllers
 			var username = HttpContext.Session.GetString("Username") ?? string.Empty;
 			var transaction = _databaseService.GetTransactionById(transactionId, username);
 
+			if (transaction == null)
+			{
+				return PartialView("_NotFound");
+			}
+
 			return PartialView("_EditTransactionModalBody", transaction);
 		}
 

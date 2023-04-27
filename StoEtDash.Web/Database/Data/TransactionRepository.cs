@@ -25,7 +25,13 @@ namespace StoEtDash.Web.Database.Data
 		{
 			using var dbContext = new StoEtDashContext();
 
-			var transaction = dbContext.Transactions.First(transaction => transaction.Id.Equals(transactionId));
+			var transaction = dbContext.Transactions.FirstOrDefault(transaction => transaction.Id.Equals(transactionId));
+
+			// Transaction was already deleted in another window
+			if (transaction == null) {
+				return;
+			}
+
 			dbContext.Transactions.Remove(transaction);
 
 			// Check if number of shares would not be less than 0 if transaction was deleted
@@ -61,11 +67,11 @@ namespace StoEtDash.Web.Database.Data
 			return dbContext.Transactions.Where(transaction => transaction.Username.Equals(username) && transaction.Ticker.Equals(ticker)).ToList();
 		}
 
-		public Transaction GetTransactionById(string transactionId, string username)
+		public Transaction? GetTransactionById(string transactionId, string username)
 		{
 			using var dbContext = new StoEtDashContext();
 
-			return dbContext.Transactions.First(transaction => transaction.Username.Equals(username) && transaction.Id.Equals(transactionId));
+			return dbContext.Transactions.FirstOrDefault(transaction => transaction.Username.Equals(username) && transaction.Id.Equals(transactionId));
 		}
 	}
 }

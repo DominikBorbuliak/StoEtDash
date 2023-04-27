@@ -41,10 +41,11 @@ namespace StoEtDash.Web.Database.Contracts
 
 		/// <summary>
 		/// Returns user transaction with specified id
+		/// Returns null if transaction does not exists
 		/// </summary>
 		/// <param name="transactionId"></param>
 		/// <param name="username"></param>
 		/// <returns></returns>
-		Transaction GetTransactionById(string transactionId, string username);
+		Transaction? GetTransactionById(string transactionId, string username);
 	}
 }

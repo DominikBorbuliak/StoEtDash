@@ -34,7 +34,7 @@ namespace StoEtDash.Web.Database.Services
 		public List<TransactionViewModel> GetTransactionsByTicker(string ticker, string username) => _transactionRepository.GetTransactionsByTicker(ticker, username)
 			.Select(transaction => transaction.FromDatabaseModel()).ToList();
 
-		public TransactionViewModel GetTransactionById(string transactionId, string username) => _transactionRepository.GetTransactionById(transactionId, username).FromDatabaseModel();
+		public TransactionViewModel? GetTransactionById(string transactionId, string username) => _transactionRepository.GetTransactionById(transactionId, username)?.FromDatabaseModel();
 
 		public async Task<DashboardViewModel> GetDashboardViewModelAsync(string username)
 		{

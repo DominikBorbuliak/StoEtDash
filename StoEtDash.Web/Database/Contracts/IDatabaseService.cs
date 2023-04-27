@@ -48,11 +48,12 @@ namespace StoEtDash.Web.Database.Contracts
 
 		/// <summary>
 		/// Gets user transaction with specified id
+		/// Returns null if transaction does not exists
 		/// </summary>
 		/// <param name="transactionId"></param>
 		/// <param name="username"></param>
 		/// <returns></returns>
-		TransactionViewModel GetTransactionById(string transactionId, string username);
+		TransactionViewModel? GetTransactionById(string transactionId, string username);
 
 		/// <summary>
 		/// Gets main page view model with all calculated values,

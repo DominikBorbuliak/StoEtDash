@@ -210,7 +210,7 @@ namespace StoEtDash.Web.Database.Services
 				Data = new List<double>()
 			};
 
-			var prices = await _marketRepositoryApi.GetTimeSeriesPrices(timeSeriesType, transactions.First().Ticker);
+			var prices = await _marketRepositoryApi.GetTimeSeriesPricesAsync(timeSeriesType, transactions.First().Ticker);
 
 			var exchangeRate = 1.0;
 			if (transactions.First().Currency != CurrencyType.EUR)

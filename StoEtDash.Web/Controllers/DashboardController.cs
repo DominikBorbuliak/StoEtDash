@@ -33,7 +33,9 @@ namespace StoEtDash.Web.Controllers
 			catch (UserException exception)
 			{
 				_notificationService.Error(exception.Message);
-				return RedirectToAction("Index", "Login");
+
+				// Logout because there could be infinite loop when marketing API is not responsive for a longer period
+				return Logout();
 			}
 		}
 

@@ -21,13 +21,8 @@ namespace StoEtDash.Web.Database.Data
 		public async Task<double> GetDividendPerShareAsync(string ticker)
 		{
 			var queryUrl = string.Format($"{BaseUrl}?{OverviewFunctionFormat}", ticker, _apiKey);
-			var queryUri = new Uri(queryUrl);
 
-			using var httpClient = new HttpClient();
-
-			var response = await httpClient.GetAsync(queryUri);
-			response.EnsureSuccessStatusCode();
-
+			var response = await GetMarketingApiResponseAsync(queryUrl);
 			var responseString = await response.Content.ReadAsStringAsync();
 			var marketOverviewResult = JsonConvert.DeserializeObject<MarketOverviewResultApi>(responseString);
 
@@ -48,13 +43,8 @@ namespace StoEtDash.Web.Database.Data
 		public async Task<double> GetPricePerShareAsync(string ticker)
 		{
 			var queryUrl = string.Format($"{BaseUrl}?{GlobalQuoteFunctionFormat}", ticker, _apiKey);
-			var queryUri = new Uri(queryUrl);
 
-			using var httpClient = new HttpClient();
-
-			var response = await httpClient.GetAsync(queryUri);
-			response.EnsureSuccessStatusCode();
-
+			var response = await GetMarketingApiResponseAsync(queryUrl);
 			var responseString = await response.Content.ReadAsStringAsync();
 			var globalQuoteResult = JsonConvert.DeserializeObject<GlobalQuoteResultApi>(responseString);
 
@@ -66,18 +56,12 @@ namespace StoEtDash.Web.Database.Data
 			return pricePerShare;
 		}
 
-		public async Task<Dictionary<DateTime, double>> GetTimeSeriesPrices(TimeSeriesType timeSeriesType, string ticker)
+		public async Task<Dictionary<DateTime, double>> GetTimeSeriesPricesAsync(TimeSeriesType timeSeriesType, string ticker)
 		{
 			var queryUrl = string.Format($"{BaseUrl}?{TimeSeriesFunctionFormat}", timeSeriesType.GetTimeSeriesFunctioNname(), ticker, _apiKey);
-			var queryUri = new Uri(queryUrl);
 
-			using var httpClient = new HttpClient();
-
-			var response = await httpClient.GetAsync(queryUri);
-			response.EnsureSuccessStatusCode();
-
+			var response = await GetMarketingApiResponseAsync(queryUrl);
 			var responseString = await response.Content.ReadAsStringAsync();
-
 			var timeSeriesDailyResult = JsonConvert.DeserializeObject<TimeSeriesResultApi>(responseString);
 
 			try
@@ -93,6 +77,30 @@ namespace StoEtDash.Web.Database.Data
 			catch
 			{
 				throw new UserException("Error occured while gathering data from market repository. Please try again later.");
+			}
+		}
+
+		/// <summary>
+		/// Returns http response message from marketing api based on url
+		/// Throws UserException with appropiate message when API returned error or null
+		/// </summary>
+		/// <param name="url"></param>
+		/// <returns></returns>
+		/// <exception cref="UserException"></exception>
+		private static async Task<HttpResponseMessage> GetMarketingApiResponseAsync(string url)
+		{
+			try
+			{
+				using var httpClient = new HttpClient();
+
+				var response = await httpClient.GetAsync(new Uri(url));
+				response.EnsureSuccessStatusCode();
+
+				return response;
+			}
+			catch // Once in a while marketing repository throws random errors like 'unable to establish ssl connection etc.'
+			{
+				throw new UserException("Marketing api is not working. Please try again later. ");
 			}
 		}
 	}

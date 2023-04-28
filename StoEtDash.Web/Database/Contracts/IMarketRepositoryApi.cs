@@ -27,6 +27,6 @@ namespace StoEtDash.Web.Database.Contracts
 		/// <param name="timeSeriesType"></param>
 		/// <param name="ticker"></param>
 		/// <returns></returns>
-		Task<Dictionary<DateTime, double>> GetTimeSeriesPrices(TimeSeriesType timeSeriesType, string ticker);
+		Task<Dictionary<DateTime, double>> GetTimeSeriesPricesAsync(TimeSeriesType timeSeriesType, string ticker);
 	}
 }

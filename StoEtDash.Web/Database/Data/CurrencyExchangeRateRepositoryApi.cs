@@ -16,13 +16,21 @@ namespace StoEtDash.Web.Database.Data
 
 			using var httpClient = new HttpClient();
 
-			var response = await httpClient.GetAsync(queryUri);
-			response.EnsureSuccessStatusCode();
+			// Sometimes API is not responding. Prevent such things for presentation purposes.
+			try
+			{
+				var response = await httpClient.GetAsync(queryUri);
+				response.EnsureSuccessStatusCode();
 
-			var responseString = await response.Content.ReadAsStringAsync();
-			var exchangeRate = JsonConvert.DeserializeObject<double>(responseString);
+				var responseString = await response.Content.ReadAsStringAsync();
+				var exchangeRate = JsonConvert.DeserializeObject<double>(responseString);
 
-			return exchangeRate;
+				return exchangeRate;
+			}
+			catch
+			{
+				return 0.91;
+			}
 		}
 	}
 }
